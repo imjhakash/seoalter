@@ -32,8 +32,19 @@ export const sendAnalysisResultEmail = async (email: string, content: string) =>
     await transporter.sendMail(mailOptions);
 };
 
+
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // Correctly resolve the Base URL for Vercel or Localhost
+    let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+    if (!baseUrl) {
+        if (process.env.VERCEL_URL) {
+            baseUrl = `https://${process.env.VERCEL_URL}`;
+        } else {
+            baseUrl = 'http://localhost:3000';
+        }
+    }
+
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
@@ -43,5 +54,12 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
         html: `<p>You requested a password reset.</p><p>Click the link below to reset your password:</p><a href="${resetUrl}">Reset Password</a><p>It expires in 1 hour.</p>`,
     };
 
-    await transporter.sendMail(mailOptions);
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error("Setup Base URL:", baseUrl);
+        console.error("Failed to send reset email:", error);
+        throw error; // Re-throw to be handled by caller
+    }
 };
+

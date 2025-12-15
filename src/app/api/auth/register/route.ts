@@ -33,9 +33,15 @@ export async function POST(req: Request) {
 
         try {
             await sendVerificationEmail(email, verificationCode);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Email send error:', error);
-            // Could delete user if email fails, but let's just return success for now and allow resend later logic if needed
+            // Return 500 but with specific message if in dev or just general error
+            // If email fails, we should probably warn the user but creating the account is done.
+            // But strict verification means they can't login.
+            return NextResponse.json({
+                message: 'User created but failed to send verification email. Please contact support.',
+                debugError: error.message
+            }, { status: 500 });
         }
 
         return NextResponse.json({ message: 'User created. Please check your email for verification code.' }, { status: 201 });
