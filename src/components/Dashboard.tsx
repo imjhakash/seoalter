@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, TrendingUp, Target, Users, FileText, Globe, Sparkles, HelpCircle, ExternalLink, Layers, MessageCircle, Menu } from 'lucide-react';
 import axios from 'axios';
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
