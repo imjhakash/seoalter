@@ -1,26 +1,95 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(20, 20, 20, 0.6);
+  --glass-shine: rgba(255, 255, 255, 0.03);
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-zinc-950 text-zinc-100 antialiased;
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 40%);
+  background-attachment: fixed;
+}
+
+::selection {
+  @apply bg-purple-500/30;
+}
+
+/* Premium Card Style */
+.glass-card {
+  @apply bg-zinc-900/60 backdrop-blur-xl border border-white/5 rounded-3xl shadow-xl transition-all duration-300;
+}
+
+.glass-card:hover {
+  @apply border-white/10 shadow-2xl shadow-purple-900/10 transform -translate-y-[2px];
+}
+
+/* Interactive Elements */
+.glass-btn {
+  @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 active:scale-95 flex items-center gap-2;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.glass-btn:hover {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+}
+
+.glass-btn-primary {
+  @apply bg-indigo-600 hover:bg-indigo-500 border-indigo-500/50 text-white shadow-indigo-500/20 shadow-lg;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+}
+
+/* Input Fields */
+.glass-input {
+  @apply w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all;
+}
+
+/* Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/20;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animations */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
