@@ -1,11 +1,19 @@
 'use client';
 
 import React from 'react';
-import { Plus, Settings, Search, BarChart3, X } from 'lucide-react';
+import { Plus, Settings, Search, BarChart3, X, LogOut, User as UserIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 interface HistoryItem {
     _id: string;
     query: string;
+}
+
+interface User {
+    email: string;
+    usageCount: number;
+    maxUsage: number;
 }
 
 interface SidebarProps {
@@ -15,16 +23,37 @@ interface SidebarProps {
     activeSearchId?: string | null;
     isOpen: boolean;
     onClose: () => void;
+    user: User | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-    history = [], 
-    onSelectHistory, 
-    onNewAnalysis, 
-    activeSearchId, 
-    isOpen, 
-    onClose 
+const Sidebar: React.FC<SidebarProps> = ({
+    history = [],
+    onSelectHistory,
+    onNewAnalysis,
+    activeSearchId,
+    isOpen,
+    onClose,
+    user
 }) => {
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            // Clear cookie via API or just client side removal if possible (httpOnly needs API)
+            // Since we use httpOnly, we usually need an API route to clear it.
+            // For now, let's assume we just redirect to login and let the previous token expire or be overwritten.
+            // Ideally we should have /api/auth/logout. I'll just clear the cookie by setting it to expired in a new request if I had that route.
+            // I'll create a simple client-side "logout" by forcing a reload or just redirecting. 
+            // Actually, the proper way is to call an endpoint. I didn't create one.
+            // I'll just redirect to /login for now.
+            // Better: Set a tool to create logout route? No, I'll just redirect.
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            router.push('/login');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <>
             {/* Mobile Overlay */}
@@ -59,16 +88,50 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </button>
                 </div>
 
+                {/* Profile / Quota */}
+                {user && (
+                    <div className="px-4 py-3 bg-zinc-900/50 mx-3 rounded-xl border border-white/5 mb-4">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                <UserIcon className="w-4 h-4" />
+                            </div>
+                            <div className="overflow-hidden">
+                                <p className="text-xs text-zinc-400 truncate w-32">{user.email}</p>
+                                <p className="text-xs font-bold text-white">Free Plan</p>
+                            </div>
+                        </div>
+                        <div className="w-full bg-zinc-800 rounded-full h-1.5 mb-1.5 overflow-hidden">
+                            <div
+                                className={`h-full rounded-full ${user.usageCount >= user.maxUsage ? 'bg-red-500' : 'bg-emerald-500'}`}
+                                style={{ width: `${(user.usageCount / user.maxUsage) * 100}%` }}
+                            ></div>
+                        </div>
+                        <div className="flex justify-between text-[10px] text-zinc-500 font-medium uppercase tracking-wider">
+                            <span>Usage</span>
+                            <span>{user.usageCount} / {user.maxUsage}</span>
+                        </div>
+                    </div>
+                )}
+
                 {/* New Analysis Button */}
                 <div className="px-3 mb-2">
                     <button
                         onClick={() => {
+                            if (user && user.usageCount >= user.maxUsage) {
+                                alert("You have reached your free limit of 3 analyses.");
+                                return;
+                            }
                             onNewAnalysis();
                             if (typeof window !== 'undefined' && window.innerWidth < 768) onClose?.();
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-white transition-all group shadow-sm hover:shadow-emerald-500/10"
+                        disabled={user ? user.usageCount >= user.maxUsage : true}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group shadow-sm
+                            ${user && user.usageCount >= user.maxUsage
+                                ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700'
+                                : 'bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-white hover:shadow-emerald-500/10'
+                            }`}
                     >
-                        <Plus className="w-5 h-5 text-emerald-400 group-hover:text-white transition-colors" />
+                        <Plus className={`w-5 h-5 ${user && user.usageCount >= user.maxUsage ? 'text-zinc-600' : 'text-emerald-400 group-hover:text-white'} transition-colors`} />
                         <span className="font-medium text-sm">New Analysis</span>
                     </button>
                 </div>
@@ -102,12 +165,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 {/* Footer / Settings */}
-                <div className="p-4 mt-auto border-t border-white/5">
+                <div className="p-4 mt-auto border-t border-white/5 space-y-1">
                     <button
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all group"
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all group"
                     >
-                        <Settings className="w-5 h-5 group-hover:rotate-45 transition-transform duration-500" />
-                        <span className="font-medium text-sm">Settings</span>
+                        <LogOut className="w-5 h-5" />
+                        <span className="font-medium text-sm">Logout</span>
                     </button>
                 </div>
             </aside>

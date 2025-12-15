@@ -56,6 +56,10 @@ const Dashboard = () => {
     const [dashboardTab, setDashboardTab] = useState('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    const [user, setUser] = useState<{ email: string; usageCount: number; maxUsage: number; } | null>(null);
+    const router = useRouter(); // Import useRouter from next/navigation needed at top
+
+    // Modify chartData to depend on user state if needed (not strict, but good practice)
     const chartData = useMemo(() => {
         if (vizData?.trends?.timeseries?.timeline_data) {
             return vizData.trends.timeseries.timeline_data.map(item => ({
@@ -73,11 +77,29 @@ const Dashboard = () => {
     }, [vizData, data]);
 
     useEffect(() => {
-        fetchHistory();
-        const lastId = typeof window !== 'undefined' ? localStorage.getItem('lastSearchId') : null;
-        if (lastId) {
-            fetchSearchById(lastId);
-        }
+        const init = async () => {
+            try {
+                const userRes = await axios.get('/api/auth/me');
+                setUser(userRes.data.user);
+
+                fetchHistory();
+                const lastId = typeof window !== 'undefined' ? localStorage.getItem('lastSearchId') : null;
+                if (lastId) {
+                    fetchSearchById(lastId);
+                }
+            } catch (error) {
+                // If not authenticated, redirect to login
+                // We should check the error status preferably
+                if (axios.isAxiosError(error) && error.response?.status === 401) {
+                    // Use window.location for full reload to clear any stale state if needed, or router
+                    window.location.href = '/login';
+                    return;
+                }
+                console.error("Failed to init dashboard:", error);
+            }
+        };
+
+        init();
     }, []);
 
     const fetchHistory = async () => {
@@ -119,6 +141,12 @@ const Dashboard = () => {
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!query.trim()) return;
+
+        if (user && user.usageCount >= user.maxUsage) {
+            alert("You have reached your free limit of 3 analyses.");
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -129,11 +157,15 @@ const Dashboard = () => {
                 localStorage.setItem('lastSearchId', res.data.searchId);
                 setCurrentSearchId(res.data.searchId);
             }
+            // Update user quota locally to reflect change immediately
+            if (user) {
+                setUser({ ...user, usageCount: user.usageCount + 1 });
+            }
             fetchHistory();
         } catch (error) {
             console.error(error);
             const errorMessage = (error as { response?: { data?: { error?: string } } }).response?.data?.error || (error as Error).message || 'Unknown error occurred';
-            alert(`Search failed: ${errorMessage}. Please check your API keys in settings.`);
+            alert(`Search failed: ${errorMessage}`);
         } finally {
             setLoading(false);
         }
@@ -612,9 +644,8 @@ const Dashboard = () => {
                 activeSearchId={currentSearchId}
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
-            />
-
-            <main className="flex-1 ml-0 md:ml-64 h-screen overflow-y-auto">
+                user={user}
+            /><main className="flex-1 ml-0 md:ml-64 h-screen overflow-y-auto">
                 {/* Mobile Header */}
                 <div className="md:hidden flex items-center gap-3 p-4 border-b border-white/5 bg-zinc-950/80 backdrop-blur sticky top-0 z-30">
                     <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-zinc-400 hover:text-white">

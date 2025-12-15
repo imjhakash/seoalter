@@ -5,14 +5,43 @@ import SerpData from '@/lib/models/SerpData';
 import Visualization from '@/lib/models/Visualization';
 import { fetchSerpBundle, normalizeQuery } from '@/lib/utils/serpManager';
 import { analyzeWithGPT } from '@/lib/utils/openaiManager';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/auth';
+import User from '@/lib/models/User';
+import { sendAnalysisResultEmail } from '@/lib/email';
+import { JwtPayload } from 'jsonwebtoken';
 
 export async function POST(request: NextRequest) {
     try {
         const { query, region, language } = await request.json();
-        
+
         if (!query) {
             return NextResponse.json({ error: 'Query required' }, { status: 400 });
         }
+
+        // --- AUTH & QUOTA CHECK ---
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+
+        if (!token) {
+            return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+        }
+
+        const decoded = verifyToken(token) as JwtPayload | null;
+        if (!decoded || !decoded.userId) {
+            return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+        }
+
+        await connectDB();
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        if (user.usageCount >= user.maxUsage) {
+            return NextResponse.json({ error: 'Usage limit exceeded (3/3). Please contact support.' }, { status: 403 });
+        }
+        // ---------------------------
 
         const serpKey = process.env.SERP_API_KEY;
         const openaiKey = process.env.OPENAI_API_KEY;
@@ -23,8 +52,6 @@ export async function POST(request: NextRequest) {
                 { status: 500 }
             );
         }
-
-        await connectDB();
 
         const queryNormalized = normalizeQuery(query);
 
@@ -38,7 +65,7 @@ export async function POST(request: NextRequest) {
             const visualization = history.visualizationId
                 ? await Visualization.findById(history.visualizationId)
                 : await Visualization.findOne({ queryNormalized });
-            
+
             return NextResponse.json({
                 source: 'cache',
                 data: history.analyzedData,
@@ -74,7 +101,7 @@ export async function POST(request: NextRequest) {
             relatedTopics: (serpBundle?.sources?.google_trends_related_topics as { data?: { related_topics?: unknown } })?.data?.related_topics || null,
             relatedQueries: (serpBundle?.sources?.google_trends_related_queries as { data?: { related_queries?: unknown } })?.data?.related_queries || null
         };
-        
+
         const visualizationDoc = await Visualization.findOneAndUpdate(
             { queryNormalized: serpBundle.queryNormalized },
             {
@@ -107,7 +134,7 @@ export async function POST(request: NextRequest) {
 
         // Attach Raw Organic & Discussions Data for Frontend
         analysis.organicResults = (serpBundle.sources.google as { data?: { organic_results?: unknown[] } })?.data?.organic_results || [];
-        analysis.discussions = (serpBundle.sources.discussions_and_forums as { data?: { discussions_and_forums?: unknown[] } })?.data?.discussions_and_forums || 
+        analysis.discussions = (serpBundle.sources.discussions_and_forums as { data?: { discussions_and_forums?: unknown[] } })?.data?.discussions_and_forums ||
             (serpBundle.sources.google_forums as { data?: { organic_results?: unknown[] } })?.data?.organic_results || [];
 
         // Attach Raw Lists (PAA, Related, Autocomplete)
@@ -124,6 +151,17 @@ export async function POST(request: NextRequest) {
         });
         await history.save();
 
+        // --- UPDATE QUOTA & SEND EMAIL ---
+        user.usageCount += 1;
+        await user.save();
+
+        try {
+            await sendAnalysisResultEmail(user.email, `<h3>Analysis Complete for "${query}"</h3><p>We have successfully analyzed your query.</p>`);
+        } catch (e) {
+            console.error("Failed to send analysis email", e);
+        }
+        // ---------------------------------
+
         return NextResponse.json({
             source: 'live',
             data: analysis,
@@ -136,3 +174,4 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }
+
