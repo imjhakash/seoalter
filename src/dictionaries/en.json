@@ -38,7 +38,9 @@
             "title": "Forgot Password",
             "subtitle": "Enter your email to receive a reset link.",
             "button": "Send Reset Link",
-            "back": "Back to Login"
+            "back": "Back to Login",
+            "success": "If an account exists with this email, a reset link has been sent.",
+            "error_generic": "Something went wrong. Please try again."
         }
     },
     "sidebar": {
@@ -51,7 +53,48 @@
     "dashboard": {
         "title": "What do you want to research today?",
         "placeholder": "Enter a keyword, topic, or question...",
-        "analyze_button": "Analyze"
+        "analyze_button": "Analyze",
+        "loading": {
+            "title": "Analyzing SERP Data...",
+            "subtitle": "Scanning Google Trends, Forums, and Competitors for \"{query}\" in {region}"
+        },
+        "overview": {
+            "title": "Complete Analysis Overview",
+            "difficulty": "Difficulty Score",
+            "opportunity": "Opportunity Score",
+            "intent": "Search Intent",
+            "grade": "Grade",
+            "sources": "Sources"
+        },
+        "tabs": {
+            "overview": "Overview",
+            "organic": "Organic",
+            "discussions": "Discussions"
+        },
+        "analysis_for": "Analysis for",
+        "new_analysis": "New",
+        "competitors": {
+            "title": "Top Competitors",
+            "leaders": "SERP Leaders (Top 5)"
+        },
+        "keywords": {
+            "related": "Related Keywords",
+            "questions": "Questions asked by users",
+            "ideas": "Content Ideas"
+        },
+        "discussion_insights": {
+            "title": "Discussion Insights",
+            "sentiment": "Sentiment",
+            "forums": "Discussions & Forums"
+        },
+        "stats": {
+            "countries": "Countries",
+            "languages": "Languages",
+            "sources": "Sources"
+        },
+        "footer": {
+            "powered_by": "Powered by"
+        }
     },
     "results": {
         "overview": "Overview",
@@ -75,5 +118,12 @@
             "subject": "Your Analysis is Ready",
             "body": "<p>Here is your analysis result:</p><br/>{content}<br/><p>Thank you for using our service.</p>"
         }
+    },
+    "chat": {
+        "greeting": "Im SEOAlter. Ask me anything about the data or general SEO strategy.",
+        "button": "Ask AI",
+        "input_placeholder": "Ask follow-up questions...",
+        "quick_actions": "Quick Actions",
+        "system_label": "System"
     }
 }

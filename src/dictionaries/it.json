@@ -38,7 +38,9 @@
             "title": "Password Dimenticata",
             "subtitle": "Inserisci la tua email per ricevere un link di reset.",
             "button": "Invia Link di Reset",
-            "back": "Torna al Login"
+            "back": "Torna al Login",
+            "success": "Se esiste un account con questa email, è stato inviato un link di reset.",
+            "error_generic": "Qualcosa è andato storto. Per favore riprova."
         }
     },
     "sidebar": {
@@ -51,7 +53,48 @@
     "dashboard": {
         "title": "Cosa vuoi ricercare oggi?",
         "placeholder": "Inserisci una keyword, un argomento o una domanda...",
-        "analyze_button": "Analizza"
+        "analyze_button": "Analizza",
+        "loading": {
+            "title": "Analisi dei dati SERP...",
+            "subtitle": "Scansione di Google Trends, forum e concorrenti per \"{query}\" in {region}"
+        },
+        "overview": {
+            "title": "Panoramica Completa dell'Analisi",
+            "difficulty": "Punteggio di Difficoltà",
+            "opportunity": "Punteggio di Opportunità",
+            "intent": "Intento di Ricerca",
+            "grade": "Voto",
+            "sources": "Fonti"
+        },
+        "tabs": {
+            "overview": "Panoramica",
+            "organic": "Organico",
+            "discussions": "Discussioni"
+        },
+        "analysis_for": "Analisi per",
+        "new_analysis": "Nuovo",
+        "competitors": {
+            "title": "Top Competitor",
+            "leaders": "Leader SERP (Top 5)"
+        },
+        "keywords": {
+            "related": "Parole Chiave Correlate",
+            "questions": "Domande poste dagli utenti",
+            "ideas": "Idee per Contenuti"
+        },
+        "discussion_insights": {
+            "title": "Approfondimenti Discussione",
+            "sentiment": "Sentimento",
+            "forums": "Discussioni & Forum"
+        },
+        "stats": {
+            "countries": "Paesi",
+            "languages": "Lingue",
+            "sources": "Fonti"
+        },
+        "footer": {
+            "powered_by": "Offerto da"
+        }
     },
     "results": {
         "overview": "Panoramica",
@@ -75,5 +118,12 @@
             "subject": "La tua analisi è pronta",
             "body": "<p>Ecco il risultato della tua analisi:</p><br/>{content}<br/><p>Grazie per aver utilizzato il nostro servizio.</p>"
         }
+    },
+    "chat": {
+        "greeting": "Sono SEOAlter. Chiedimi qualsiasi cosa sui dati o sulla strategia SEO generale.",
+        "button": "Chiedi all'AI",
+        "input_placeholder": "Fai domande di approfondimento...",
+        "quick_actions": "Azioni Rapide",
+        "system_label": "Sistema"
     }
 }

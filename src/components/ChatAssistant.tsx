@@ -3,11 +3,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, Send, X } from 'lucide-react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 
 interface ChatAssistantProps {
     contextData?: Record<string, unknown> | object | null;
     contextId?: string | null;
     lang?: string;
+    dict?: any;
 }
 
 interface Message {
@@ -20,15 +22,25 @@ interface SmartButton {
     prompt: string;
 }
 
-const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, lang = 'en' }) => {
+const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, lang = 'en', dict }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        { role: 'system', content: 'Hello! I am your SEO Assistant. Ask me anything about the data or general SEO strategy.' }
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [quickQuestions, setQuickQuestions] = useState<SmartButton[]>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Initialize greeting from dict
+    useEffect(() => {
+        if (messages.length === 0) {
+            setMessages([
+                {
+                    role: 'system',
+                    content: dict?.chat?.greeting || 'Im SEOAlter. Ask me anything about the data or general SEO strategy.'
+                }
+            ]);
+        }
+    }, [dict, messages.length]);
 
     useEffect(() => {
         if (contextId || contextData) {
@@ -93,7 +105,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, l
                 className="fixed bottom-6 right-6 md:bottom-8 md:right-8 p-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-lg shadow-indigo-600/30 hover:scale-110 transition-all z-[90] animate-bounce-subtle flex items-center gap-2 group"
             >
                 <MessageSquare className="w-6 h-6" />
-                <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-sm font-bold">Ask AI</span>
+                <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-sm font-bold">{dict?.chat?.button || "Ask AI"}</span>
             </button>
         );
     }
@@ -121,7 +133,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, l
                 {/* Welcome & Quick Questions */}
                 {messages.length === 1 && quickQuestions.length > 0 && (
                     <div className="mb-6 space-y-2">
-                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1">Quick Actions</p>
+                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1">{dict?.chat?.quick_actions || "Quick Actions"}</p>
                         <div className="flex flex-wrap gap-2">
                             {quickQuestions.map((btn, i) => (
                                 <button
@@ -142,8 +154,10 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, l
                             ? 'bg-indigo-600 text-white rounded-tr-none shadow-indigo-900/20'
                             : 'bg-zinc-800/80 text-zinc-100 rounded-tl-none border border-white/5'
                             }`}>
-                            {msg.role === 'system' && <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold block mb-2">System</span>}
-                            {msg.content}
+                            {msg.role === 'system' && <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold block mb-2">{dict?.chat?.system_label || "System"}</span>}
+                            <div className="markdown-content">
+                                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -166,7 +180,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, l
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder="Ask follow-up questions..."
+                        placeholder={dict?.chat?.input_placeholder || "Ask follow-up questions..."}
                         className="w-full bg-zinc-800/50 border border-white/5 rounded-xl pl-4 pr-12 py-3.5 text-sm text-white focus:outline-none focus:bg-zinc-800 transition shadow-inner placeholder:text-zinc-600"
                     />
                     <button

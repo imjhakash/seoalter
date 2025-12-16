@@ -279,8 +279,8 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                 </div>
             </div>
             <div className="text-center space-y-2">
-                <h3 className="text-2xl font-bold text-white animate-pulse">Analyzing SERP Data...</h3>
-                <p className="text-zinc-400">Scanning Google Trends, Forums, and Competitors for &quot;{query}&quot; in {regions.find(r => r.code === region)?.name}</p>
+                <h3 className="text-2xl font-bold text-white animate-pulse">{dict?.dashboard?.loading?.title || "Analyzing SERP Data..."}</h3>
+                <p className="text-zinc-400">{(dict?.dashboard?.loading?.subtitle || "Scanning Google Trends, Forums, and Competitors for \"{query}\" in {region}").replace('{query}', query).replace('{region}', regions.find(r => r.code === region)?.name || region)}</p>
             </div>
         </div>
     );
@@ -290,13 +290,13 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
             {/* Overall Summary */}
             <div className="glass-card p-6 border-l-4 border-amber-500 bg-gradient-to-r from-amber-900/10 to-transparent">
                 <h3 className="text-lg font-bold text-amber-300 mb-3 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5" /> Complete Analysis Overview
+                    <Sparkles className="w-5 h-5" /> {dict?.dashboard?.overview?.title || "Complete Analysis Overview"}
                 </h3>
                 <p className="text-zinc-300 leading-relaxed whitespace-pre-line">{data?.overallSummary}</p>
 
                 {data?.citations && data.citations.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-white/10">
-                        <h4 className="text-sm font-bold text-amber-200 mb-2">Sources</h4>
+                        <h4 className="text-sm font-bold text-amber-200 mb-2">{dict?.dashboard?.overview?.sources || "Sources"}</h4>
                         <div className="flex flex-wrap gap-2">
                             {data.citations.map((cite, i) => (
                                 <a key={i} href={cite.url} target="_blank" rel="noreferrer" className="text-xs bg-white/5 px-3 py-1 rounded-full hover:bg-white/10 flex items-center gap-1">
@@ -314,7 +314,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                 <div className="glass-card p-5">
                     <div className="flex items-center justify-between mb-3">
                         <div>
-                            <p className="text-zinc-500 text-xs uppercase font-bold">Difficulty Score</p>
+                            <p className="text-zinc-500 text-xs uppercase font-bold">{dict?.dashboard?.overview?.difficulty || "Difficulty Score"}</p>
                             <p className="text-3xl font-bold">{data?.scores?.difficulty || 50}</p>
                         </div>
                         <div className="w-16 h-16">
@@ -338,7 +338,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                 <div className="glass-card p-5">
                     <div className="flex items-center justify-between mb-3">
                         <div>
-                            <p className="text-zinc-500 text-xs uppercase font-bold">Opportunity Score</p>
+                            <p className="text-zinc-500 text-xs uppercase font-bold">{dict?.dashboard?.overview?.opportunity || "Opportunity Score"}</p>
                             <p className="text-3xl font-bold">{data?.scores?.opportunity || 50}</p>
                         </div>
                         <div className="w-16 h-16">
@@ -360,10 +360,10 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
 
                 {/* Intent */}
                 <div className="glass-card p-5">
-                    <p className="text-zinc-500 text-xs uppercase font-bold mb-2">Search Intent</p>
+                    <p className="text-zinc-500 text-xs uppercase font-bold mb-2">{dict?.dashboard?.overview?.intent || "Search Intent"}</p>
                     <p className="text-2xl font-bold mb-1">{data?.intent?.type || 'Unknown'}</p>
                     <span className={`text-xs px-2 py-1 rounded ${data?.intent?.grade === 'A' ? 'bg-green-500/20 text-green-400' : data?.intent?.grade === 'B' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>
-                        Grade: {data?.intent?.grade || 'C'}
+                        {dict?.dashboard?.overview?.grade || "Grade"}: {data?.intent?.grade || 'C'}
                     </span>
                     <p className="text-xs text-zinc-400 mt-3">{data?.intent?.description}</p>
                 </div>
@@ -809,7 +809,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
 
                                     <div className="text-center pt-8 pb-4">
                                         <p className="text-xs text-zinc-600">
-                                            Powered by <span className="text-emerald-500 font-semibold">Codemypixel</span>
+                                            {dict?.dashboard?.footer?.powered_by || "Powered by"} <span className="text-emerald-500 font-semibold">Codemypixel</span>
                                         </p>
                                     </div>
                                 </div>
@@ -819,7 +819,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                                 <div className="space-y-6">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/10 pb-4 gap-4">
                                         <div>
-                                            <p className="text-zinc-500 text-sm">Analysis for</p>
+                                            <p className="text-zinc-500 text-sm">{dict?.dashboard?.analysis_for || 'Analysis for'}</p>
                                             <h2 className="text-3xl font-bold">{query}</h2>
                                         </div>
                                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
@@ -833,12 +833,12 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                                                             : 'text-zinc-400 hover:text-white'
                                                             }`}
                                                     >
-                                                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                                        {dict?.dashboard?.tabs?.[tab] || tab.charAt(0).toUpperCase() + tab.slice(1)}
                                                     </button>
                                                 ))}
                                             </div>
                                             <button onClick={() => { setData(null); setQuery(''); }} className="w-full sm:w-auto px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm flex items-center justify-center gap-2 whitespace-nowrap">
-                                                <Search className="w-4 h-4" /> New
+                                                <Search className="w-4 h-4" /> {dict?.dashboard?.new_analysis || 'New'}
                                             </button>
                                         </div>
                                     </div>
@@ -853,7 +853,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                 </div>
             </main>
 
-            {data && <ChatAssistant contextData={data} contextId={currentSearchId} lang={language} />}
+            {data && <ChatAssistant contextData={data} contextId={currentSearchId} lang={language} dict={dict} />}
         </div>
     );
 };

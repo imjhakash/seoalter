@@ -38,7 +38,9 @@
             "title": "Wachtwoord Vergeten",
             "subtitle": "Voer je e-mail in om een resetlink te ontvangen.",
             "button": "Stuur Resetlink",
-            "back": "Terug naar Inloggen"
+            "back": "Terug naar Inloggen",
+            "success": "Als er een account bestaat met dit e-mailadres, is er een resetlink verzonden.",
+            "error_generic": "Er is iets misgegaan. Probeer het opnieuw."
         }
     },
     "sidebar": {
@@ -51,7 +53,48 @@
     "dashboard": {
         "title": "Wat wil je vandaag onderzoeken?",
         "placeholder": "Voer een zoekwoord, onderwerp of vraag in...",
-        "analyze_button": "Analyseren"
+        "analyze_button": "Analyseren",
+        "loading": {
+            "title": "SERP-gegevens analyseren...",
+            "subtitle": "Google Trends, forums en concurrenten scannen voor \"{query}\" in {region}"
+        },
+        "overview": {
+            "title": "Volledig Analyse Overzicht",
+            "difficulty": "Moeilijkheidsgraad",
+            "opportunity": "Kansen Score",
+            "intent": "Zoekintentie",
+            "grade": "Cijfer",
+            "sources": "Bronnen"
+        },
+        "tabs": {
+            "overview": "Overzicht",
+            "organic": "Organisch",
+            "discussions": "Discussies"
+        },
+        "analysis_for": "Analyse voor",
+        "new_analysis": "Nieuw",
+        "competitors": {
+            "title": "Top Concurrenten",
+            "leaders": "SERP Leiders (Top 5)"
+        },
+        "keywords": {
+            "related": "Gerelateerde Zoekwoorden",
+            "questions": "Vragen gesteld door gebruikers",
+            "ideas": "Content Ideeën"
+        },
+        "discussion_insights": {
+            "title": "Discussie Inzichten",
+            "sentiment": "Sentiment",
+            "forums": "Discussies & Forums"
+        },
+        "stats": {
+            "countries": "Landen",
+            "languages": "Talen",
+            "sources": "Bronnen"
+        },
+        "footer": {
+            "powered_by": "Aangedreven door"
+        }
     },
     "results": {
         "overview": "Overzicht",
@@ -75,5 +118,12 @@
             "subject": "Uw analyse is klaar",
             "body": "<p>Hier is uw analyseresultaat:</p><br/>{content}<br/><p>Bedankt voor het gebruik van onze service.</p>"
         }
+    },
+    "chat": {
+        "greeting": "Ik ben SEOAlter. Vraag me alles over de data of algemene SEO strategie.",
+        "button": "Vraag AI",
+        "input_placeholder": "Stel vervolgvragen...",
+        "quick_actions": "Snelle Acties",
+        "system_label": "Systeem"
     }
 }

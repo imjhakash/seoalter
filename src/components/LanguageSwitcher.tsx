@@ -16,16 +16,17 @@ export default function LanguageSwitcher() {
     };
 
     return (
-        <div className="flex items-center space-x-2 text-sm text-zinc-400">
+        <div className="flex items-center space-x-2 text-sm text-zinc-400 bg-white/5 px-2 py-1 rounded-lg border border-white/5">
             <Globe className="w-4 h-4" />
             <select
                 onChange={(e) => handleLanguageChange(e.target.value)}
                 value={pathname?.split('/')[1] || 'en'}
-                className="bg-transparent border-none focus:ring-0 cursor-pointer hover:text-white"
+                className="bg-transparent border-none focus:ring-0 cursor-pointer hover:text-white outline-none appearance-none pr-4"
+                style={{ backgroundImage: 'none' }}
             >
-                <option value="en" className="bg-zinc-900 text-white">English</option>
-                <option value="nl" className="bg-zinc-900 text-white">Nederlands</option>
-                <option value="it" className="bg-zinc-900 text-white">Italiano</option>
+                <option value="en" className="bg-zinc-900 text-white">🇬🇧 English</option>
+                <option value="nl" className="bg-zinc-900 text-white">🇳🇱 Nederlands</option>
+                <option value="it" className="bg-zinc-900 text-white">🇮🇹 Italiano</option>
             </select>
         </div>
     );
