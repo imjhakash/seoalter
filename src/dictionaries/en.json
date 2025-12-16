@@ -41,7 +41,12 @@
             "back": "Back to Login",
             "success": "If an account exists with this email, a reset link has been sent.",
             "error_generic": "Something went wrong. Please try again."
-        }
+        },
+        "marketing": {
+            "title": "Advanced AI SEO",
+            "subtitle": "We don’t just analyze keywords with basic ChatGPT! We use the most advanced data scraping and perform deep analysis using AI for the best accuracy."
+        },
+        "remember_me": "Remember Me"
     },
     "sidebar": {
         "new_analysis": "New Analysis",
@@ -54,6 +59,12 @@
         "title": "What do you want to research today?",
         "placeholder": "Enter a keyword, topic, or question...",
         "analyze_button": "Analyze",
+        "how_it_works": {
+            "title": "How It Works",
+            "step1": "1. Enter Keyword",
+            "step2": "2. SERP Scraping",
+            "step3": "3. AI Analysis"
+        },
         "loading": {
             "title": "Analyzing SERP Data...",
             "subtitle": "Scanning Google Trends, Forums, and Competitors for \"{query}\" in {region}"
@@ -75,25 +86,51 @@
         "new_analysis": "New",
         "competitors": {
             "title": "Top Competitors",
-            "leaders": "SERP Leaders (Top 5)"
+            "leaders": "SERP Leaders (Top 5)",
+            "columns": {
+                "competitors": "Competitors",
+                "top_serp_leaders": "Top SERP leaders"
+            }
         },
         "keywords": {
             "related": "Related Keywords",
-            "questions": "Questions asked by users",
-            "ideas": "Content Ideas"
+            "questions": "People Ask",
+            "ideas": "Content Ideas",
+            "people_also_search": "People Also Search",
+            "google_autocomplete": "Google Autocomplete",
+            "target_keywords_ai": "Target Keywords (AI)",
+            "essential_content": "Essential Content Elements",
+            "autocomplete": "Related & autocomplete"
+        },
+        "trend_analysis": {
+            "title": "Trend Analysis",
+            "subtitle": "12-month Google Trends",
+            "chart_title": "12-Month Trend"
+        },
+        "forum_insights": {
+            "title": "Forum Insights",
+            "subtitle": "Reddit & Quora analysis"
         },
         "discussion_insights": {
             "title": "Discussion Insights",
             "sentiment": "Sentiment",
             "forums": "Discussions & Forums"
         },
+        "strategy": {
+            "title": "Action Strategy"
+        },
         "stats": {
             "countries": "Countries",
             "languages": "Languages",
-            "sources": "Sources"
+            "sources": "Sources",
+            "ai_model": "GPT-4 AI"
+        },
+        "forms": {
+            "region": "Region",
+            "language": "Language"
         },
         "footer": {
-            "powered_by": "Powered by"
+            "developed_by": "Developed by team"
         }
     },
     "results": {

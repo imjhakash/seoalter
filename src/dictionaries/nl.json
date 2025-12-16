@@ -41,7 +41,12 @@
             "back": "Terug naar Inloggen",
             "success": "Als er een account bestaat met dit e-mailadres, is er een resetlink verzonden.",
             "error_generic": "Er is iets misgegaan. Probeer het opnieuw."
-        }
+        },
+        "marketing": {
+            "title": "Geavanceerde AI SEO",
+            "subtitle": "Wij analyseren niet alleen zoekwoorden met eenvoudige ChatGPT! We gebruiken de meest geavanceerde data scraping en voeren diepe analyses uit met AI voor de beste nauwkeurigheid."
+        },
+        "remember_me": "Onthoud mij"
     },
     "sidebar": {
         "new_analysis": "Nieuwe Analyse",
@@ -54,6 +59,12 @@
         "title": "Wat wil je vandaag onderzoeken?",
         "placeholder": "Voer een zoekwoord, onderwerp of vraag in...",
         "analyze_button": "Analyseren",
+        "how_it_works": {
+            "title": "Hoe het werkt",
+            "step1": "1. Voer zoekwoord in",
+            "step2": "2. SERP Scraping",
+            "step3": "3. AI Analyse"
+        },
         "loading": {
             "title": "SERP-gegevens analyseren...",
             "subtitle": "Google Trends, forums en concurrenten scannen voor \"{query}\" in {region}"
@@ -75,25 +86,51 @@
         "new_analysis": "Nieuw",
         "competitors": {
             "title": "Top Concurrenten",
-            "leaders": "SERP Leiders (Top 5)"
+            "leaders": "SERP Leiders (Top 5)",
+            "columns": {
+                "competitors": "Concurrenten",
+                "top_serp_leaders": "Top SERP leiders"
+            }
         },
         "keywords": {
             "related": "Gerelateerde Zoekwoorden",
-            "questions": "Vragen gesteld door gebruikers",
-            "ideas": "Content Ideeën"
+            "questions": "Mensen vragen",
+            "ideas": "Content Ideeën",
+            "people_also_search": "Mensen zoeken ook",
+            "google_autocomplete": "Google Autocomplete",
+            "target_keywords_ai": "Doelzoekwoorden (AI)",
+            "essential_content": "Essentiële Content Elementen",
+            "autocomplete": "Gerelateerd & autocomplete"
+        },
+        "trend_analysis": {
+            "title": "Trend Analyse",
+            "subtitle": "12-maanden Google Trends",
+            "chart_title": "12-Maanden Trend"
+        },
+        "forum_insights": {
+            "title": "Forum Inzichten",
+            "subtitle": "Reddit & Quora analyse"
         },
         "discussion_insights": {
             "title": "Discussie Inzichten",
             "sentiment": "Sentiment",
             "forums": "Discussies & Forums"
         },
+        "strategy": {
+            "title": "Actie Strategie"
+        },
         "stats": {
             "countries": "Landen",
             "languages": "Talen",
-            "sources": "Bronnen"
+            "sources": "Bronnen",
+            "ai_model": "GPT-4 AI"
+        },
+        "forms": {
+            "region": "Regio",
+            "language": "Taal"
         },
         "footer": {
-            "powered_by": "Aangedreven door"
+            "developed_by": "Ontwikkeld door team"
         }
     },
     "results": {

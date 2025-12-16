@@ -376,7 +376,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                     {/* Competitors */}
                     <div className="glass-card p-6">
                         <h3 className="text-sm font-bold text-zinc-400 uppercase mb-2 flex items-center gap-2">
-                            <Users className="w-4 h-4" /> Top Competitors
+                            <Users className="w-4 h-4" /> {dict?.dashboard?.competitors?.title || "Top Competitors"}
                         </h3>
                         <p className="text-sm text-zinc-500 mb-4 bg-purple-900/20 p-2 rounded border-l-2 border-purple-500">{data?.sectionInsights?.competitors}</p>
 
@@ -396,114 +396,84 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                         </div>
 
                         <div>
-                            <h4 className="text-xs font-bold text-zinc-500 uppercase mb-2">SERP Leaders (Top 5)</h4>
+                            <h4 className="text-xs font-bold text-zinc-500 uppercase mb-2">{dict?.dashboard?.competitors?.leaders || "SERP Leaders (Top 5)"}</h4>
                             <div className="space-y-2">
-                                {data?.organicResults?.slice(0, 5).map((res, i) => (
-                                    <div key={i} className="flex items-center justify-between bg-white/5 p-2 rounded">
-                                        <div className="flex items-center gap-2 overflow-hidden">
-                                            <span className="text-xs font-mono text-zinc-500">#{res.position}</span>
-                                            {res.favicon && <img src={res.favicon} alt="" className="w-4 h-4 rounded-full flex-shrink-0" onError={(e) => (e.target as HTMLImageElement).style.display = 'none'} />}
-                                            <span className="text-sm text-zinc-300 truncate">{res.link ? new URL(res.link).hostname.replace('www.', '') : ''}</span>
+                                {data?.organicResults?.slice(0, 5).map((result, i) => (
+                                    <a key={i} href={result.link} target="_blank" rel="noreferrer" className="block bg-zinc-800/50 p-3 rounded-lg hover:bg-zinc-800 transition flex items-center gap-3 group">
+                                        <div className="w-6 h-6 bg-black rounded flex items-center justify-center text-xs font-bold text-zinc-500 group-hover:bg-indigo-500 group-hover:text-white transition">{result.position}</div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium truncate group-hover:text-indigo-300 transition">{result.title}</p>
+                                            <p className="text-xs text-zinc-500 truncate">{result.displayed_link}</p>
                                         </div>
-                                        <a href={res.link} target="_blank" rel="noreferrer" className="text-xs text-indigo-400 hover:text-indigo-300">Visit</a>
-                                    </div>
+                                    </a>
                                 ))}
                             </div>
                         </div>
                     </div>
-
-                    {/* Keywords */}
-                    <div className="glass-card p-6">
-                        <h3 className="text-sm font-bold text-zinc-400 uppercase mb-2 flex items-center gap-2">
-                            <Target className="w-4 h-4" /> Related Keywords
-                        </h3>
-                        <p className="text-sm text-zinc-500 mb-4 bg-indigo-900/20 p-2 rounded border-l-2 border-indigo-500">{data?.sectionInsights?.keywords}</p>
-                        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                            <div>
-                                <p className="text-xs text-zinc-500 mb-2 font-bold uppercase">Target Keywords (AI)</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {data?.keywords?.primary?.map((kw, i) => (
-                                        <span key={i} className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-sm border border-indigo-500/30">{kw}</span>
-                                    ))}
-                                    {data?.keywords?.secondary?.map((kw, i) => (
-                                        <span key={i} className="px-3 py-1 bg-zinc-700 text-zinc-300 rounded-full text-sm">{kw}</span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {data?.autocomplete && data.autocomplete.length > 0 && (
-                                <div>
-                                    <p className="text-xs text-zinc-500 mb-2 font-bold uppercase">Google Autocomplete</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {data.autocomplete.map((item, i) => (
-                                            <span key={i} className="px-3 py-1 bg-white/5 text-zinc-300 rounded-full text-sm hover:bg-white/10 transition cursor-default">
-                                                {item.value}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {data?.relatedSearches && data.relatedSearches.length > 0 && (
-                                <div>
-                                    <p className="text-xs text-zinc-500 mb-2 font-bold uppercase">People Also Search</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {data.relatedSearches.map((item, i) => (
-                                            <span key={i} className="px-3 py-1 bg-white/5 text-zinc-400 rounded-full text-sm hover:bg-white/10 transition cursor-default">
-                                                {item.query}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                    <div className="flex flex-wrap gap-2">
+                        {data?.relatedSearches?.map((item, i) => (
+                            <span key={i} className="px-3 py-1 bg-white/5 text-zinc-400 rounded-full text-sm hover:bg-white/10 transition cursor-default">
+                                {item.query}
+                            </span>
+                        ))}
                     </div>
                 </div>
 
                 {/* Right Column */}
                 <div className="space-y-6">
-                    {/* Trend */}
-                    <div className="glass-card p-6">
-                        <h3 className="text-sm font-bold text-zinc-400 uppercase mb-2 flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4" /> 12-Month Trend
-                        </h3>
-                        <p className="text-sm text-zinc-500 mb-3 bg-pink-900/20 p-2 rounded border-l-2 border-pink-500">{data?.sectionInsights?.trends}</p>
-                        <div className="h-32">
-                            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                                <AreaChart data={chartData}>
-                                    <defs>
-                                        <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#ec4899" stopOpacity={0.3} />
-                                            <stop offset="100%" stopColor="#ec4899" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <Area type="monotone" dataKey="value" stroke="#ec4899" fill="url(#trendGrad)" strokeWidth={2} />
-                                    <XAxis dataKey="date" tick={{ fill: '#71717a', fontSize: 10 }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={20} />
-                                    <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: '8px', fontSize: '12px' }} formatter={(value) => [value, 'Interest']} />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
+                    {/* This column is now empty as Trend and Questions moved */}
+                </div>
+            </div>
 
-                    {/* Questions */}
-                    <div className="glass-card p-6">
-                        <h3 className="text-sm font-bold text-zinc-400 uppercase mb-2 flex items-center gap-2">
-                            <HelpCircle className="w-4 h-4" /> People Ask
-                        </h3>
-                        <p className="text-sm text-zinc-500 mb-3 bg-cyan-900/20 p-2 rounded border-l-2 border-cyan-500">{data?.sectionInsights?.questions}</p>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                            {data?.questions?.map((q, i) => (
-                                <div key={`ai-${i}`} className="text-sm text-zinc-300 bg-white/5 p-3 rounded-lg flex gap-2">
-                                    <span className="text-indigo-400 font-bold">?</span> {q}
-                                </div>
-                            ))}
-                            {data?.peopleAlsoAsk?.map((q, i) => (
-                                <div key={`paa-${i}`} className="text-sm text-zinc-300 bg-white/5 p-3 rounded-lg flex gap-2">
-                                    <span className="text-indigo-400 font-bold">?</span> {q.question || String(q)}
-                                </div>
-                            ))}
-                        </div>
+            {/* Trends & Forums */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Google Trends */}
+                <div className="glass-card p-6">
+                    <h3 className="text-sm font-bold text-zinc-400 uppercase mb-1 flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4" /> {dict?.dashboard?.trend_analysis?.title || "Trend Analysis"}
+                    </h3>
+                    <p className="text-xs text-zinc-500 mb-6">{dict?.dashboard?.trend_analysis?.subtitle || "12-month Google Trends"}</p>
+                    <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                            <AreaChart data={chartData}>
+                                <defs>
+                                    <linearGradient id="colorTrend" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="date" stroke="#52525b" fontSize={11} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#52525b" fontSize={11} tickLine={false} axisLine={false} />
+                                <Tooltip
+                                    contentStyle={{ background: '#18181b', border: 'none', borderRadius: '8px' }}
+                                    itemStyle={{ color: '#fff' }}
+                                    cursor={{ stroke: '#52525b', strokeDasharray: '4 4' }}
+                                />
+                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorTrend)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
+                </div>
+
+                {/* Forum Insights */}
+                <div className="glass-card p-6">
+                    <h3 className="text-sm font-bold text-zinc-400 uppercase mb-1 flex items-center gap-2">
+                        <MessageCircle className="w-4 h-4" /> {dict?.dashboard?.forum_insights?.title || "Forum Insights"}
+                    </h3>
+                    <p className="text-xs text-zinc-500 mb-6">{dict?.dashboard?.forum_insights?.subtitle || "Reddit & Quora analysis"}</p>
+                    {data?.discussionInsights?.summary ? (
+                        <div className="space-y-4">
+                            <p className="text-sm text-zinc-300">{data.discussionInsights.summary}</p>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-zinc-500 uppercase">{dict?.dashboard?.discussion_insights?.sentiment || "Sentiment"}:</span>
+                                <span className={`text-xs px-2 py-1 rounded font-bold ${data.discussionInsights.sentiment === 'Positive' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                    {data.discussionInsights.sentiment}
+                                </span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-zinc-500">No discussion insights available.</div>
+                    )}
                 </div>
             </div>
 
@@ -511,7 +481,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="glass-card p-6">
                     <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-purple-400" /> Action Strategy
+                        <FileText className="w-5 h-5 text-purple-400" /> {dict?.dashboard?.strategy?.title || "Action Strategy"}
                     </h3>
                     <p className="text-sm text-zinc-500 mb-4 bg-emerald-900/20 p-3 rounded border-l-2 border-emerald-500">{data?.sectionInsights?.results}</p>
                     <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line bg-zinc-900/50 p-4 rounded-lg">
@@ -521,7 +491,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
 
                 <div className="glass-card p-6">
                     <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-                        <Target className="w-5 h-5 text-rose-400" /> Essential Content Elements
+                        <Target className="w-5 h-5 text-rose-400" /> {dict?.dashboard?.essential_content_elements?.title || "Essential Content Elements"}
                     </h3>
                     <div className="space-y-3">
                         {data?.contentRequirements?.map((req, i) => (
@@ -539,7 +509,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
             {/* Content Ideas */}
             <div>
                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-yellow-400" /> Content Ideas
+                    <Layers className="w-5 h-5 text-yellow-400" /> {dict?.dashboard?.content_ideas?.title || "Content Ideas"}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {data?.contentIdeas?.map((idea, i) => (
@@ -679,11 +649,11 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                                         <div className="relative inline-block">
                                             <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 opacity-20 blur-3xl rounded-full"></div>
                                             <h1 className="relative text-3xl sm:text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 tracking-tight">
-                                                SEOPataka
+                                                SEOAlter
                                             </h1>
                                         </div>
-                                        <p className="text-sm sm:text-base md:text-lg text-zinc-400 max-w-xl mx-auto px-4">
-                                            {dict.dashboard.title || "Real-time SEO Intelligence powered by AI."}
+                                        <p className="text-xs text-zinc-600">
+                                            {dict?.dashboard?.footer?.developed_by || "Developed by team"} <a href="https://codemypixel.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 font-semibold hover:underline">Codemypixel.com</a>
                                         </p>
                                     </div>
 
@@ -742,75 +712,22 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                                         </div>
                                     </form>
 
-                                    <div className="max-w-3xl mx-auto px-2">
-                                        <h2 className="text-center text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">How It Works</h2>
-                                        <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                                            <div className="glass-card p-3 sm:p-4 text-center group hover:border-emerald-500/30 transition-all">
-                                                <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center border border-emerald-500/20">
-                                                    <Search className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
-                                                </div>
-                                                <h3 className="font-bold text-white text-xs sm:text-sm">1. Enter Keyword</h3>
-                                            </div>
-                                            <div className="glass-card p-3 sm:p-4 text-center group hover:border-teal-500/30 transition-all">
-                                                <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 flex items-center justify-center border border-teal-500/20">
-                                                    <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-teal-400" />
-                                                </div>
-                                                <h3 className="font-bold text-white text-xs sm:text-sm">2. SERP Scraping</h3>
-                                            </div>
-                                            <div className="glass-card p-3 sm:p-4 text-center group hover:border-cyan-500/30 transition-all">
-                                                <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center border border-cyan-500/20">
-                                                    <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
-                                                </div>
-                                                <h3 className="font-bold text-white text-xs sm:text-sm">3. AI Analysis</h3>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div className="max-w-3xl mx-auto px-2">
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="glass-card p-4 border-l-2 border-l-emerald-500">
-                                                <TrendingUp className="w-5 h-5 text-emerald-400 mb-2" />
-                                                <h3 className="font-bold text-white text-sm">Trend Analysis</h3>
-                                                <p className="text-xs text-zinc-500 mt-1">12-month Google Trends</p>
-                                            </div>
-                                            <div className="glass-card p-4 border-l-2 border-l-teal-500">
-                                                <MessageCircle className="w-5 h-5 text-teal-400 mb-2" />
-                                                <h3 className="font-bold text-white text-sm">Forum Insights</h3>
-                                                <p className="text-xs text-zinc-500 mt-1">Reddit & Quora analysis</p>
-                                            </div>
-                                            <div className="glass-card p-4 border-l-2 border-l-cyan-500">
-                                                <Users className="w-5 h-5 text-cyan-400 mb-2" />
-                                                <h3 className="font-bold text-white text-sm">Competitors</h3>
-                                                <p className="text-xs text-zinc-500 mt-1">Top SERP leaders</p>
-                                            </div>
-                                            <div className="glass-card p-4 border-l-2 border-l-blue-500">
-                                                <Target className="w-5 h-5 text-blue-400 mb-2" />
-                                                <h3 className="font-bold text-white text-sm">Keywords</h3>
-                                                <p className="text-xs text-zinc-500 mt-1">Related & autocomplete</p>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div className="max-w-3xl mx-auto px-2">
-                                        <div className="grid grid-cols-4 gap-2">
-                                            {[
-                                                { value: '200+', label: 'Countries' },
-                                                { value: '30+', label: 'Languages' },
-                                                { value: '8+', label: 'Sources' },
-                                                { value: 'GPT-4', label: 'AI' },
-                                            ].map((stat, i) => (
-                                                <div key={i} className="text-center p-3 rounded-lg bg-zinc-900/50 border border-white/5">
-                                                    <div className="text-lg sm:text-xl font-bold text-emerald-400">{stat.value}</div>
-                                                    <div className="text-[10px] sm:text-xs text-zinc-500">{stat.label}</div>
-                                                </div>
-                                            ))}
+                                    {/* How it works */}
+                                    <div className="grid grid-cols-3 gap-8 w-full max-w-2xl mt-12 pt-12 border-t border-white/5 opacity-50 hover:opacity-100 transition-opacity">
+                                        <div className="text-center space-y-2">
+                                            <div className="w-10 h-10 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-indigo-400 font-bold border border-indigo-500/20">1</div>
+                                            <p className="text-xs text-zinc-400 font-medium">{dict?.dashboard?.how_it_works?.step1 || "1. Enter Keyword"}</p>
                                         </div>
-                                    </div>
-
-                                    <div className="text-center pt-8 pb-4">
-                                        <p className="text-xs text-zinc-600">
-                                            {dict?.dashboard?.footer?.powered_by || "Powered by"} <span className="text-emerald-500 font-semibold">Codemypixel</span>
-                                        </p>
+                                        <div className="text-center space-y-2">
+                                            <div className="w-10 h-10 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-purple-400 font-bold border border-purple-500/20">2</div>
+                                            <p className="text-xs text-zinc-400 font-medium">{dict?.dashboard?.how_it_works?.step2 || "2. SERP Scraping"}</p>
+                                        </div>
+                                        <div className="text-center space-y-2">
+                                            <div className="w-10 h-10 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-pink-400 font-bold border border-pink-500/20">3</div>
+                                            <p className="text-xs text-zinc-400 font-medium">{dict?.dashboard?.how_it_works?.step3 || "3. AI Analysis"}</p>
+                                        </div>
                                     </div>
                                 </div>
                             )}

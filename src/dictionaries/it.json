@@ -41,7 +41,12 @@
             "back": "Torna al Login",
             "success": "Se esiste un account con questa email, è stato inviato un link di reset.",
             "error_generic": "Qualcosa è andato storto. Per favore riprova."
-        }
+        },
+        "marketing": {
+            "title": "SEO Avanzata con AI",
+            "subtitle": "Non analizziamo solo parole chiave con ChatGPT di base! Usiamo scraping di dati avanzato e analisi approfondita tramite AI per la massima precisione."
+        },
+        "remember_me": "Ricordami"
     },
     "sidebar": {
         "new_analysis": "Nuova Analisi",
@@ -54,6 +59,12 @@
         "title": "Cosa vuoi ricercare oggi?",
         "placeholder": "Inserisci una keyword, un argomento o una domanda...",
         "analyze_button": "Analizza",
+        "how_it_works": {
+            "title": "Come Funziona",
+            "step1": "1. Inserisci Keyword",
+            "step2": "2. Scraping SERP",
+            "step3": "3. Analisi AI"
+        },
         "loading": {
             "title": "Analisi dei dati SERP...",
             "subtitle": "Scansione di Google Trends, forum e concorrenti per \"{query}\" in {region}"
@@ -75,25 +86,51 @@
         "new_analysis": "Nuovo",
         "competitors": {
             "title": "Top Competitor",
-            "leaders": "Leader SERP (Top 5)"
+            "leaders": "Leader SERP (Top 5)",
+            "columns": {
+                "competitors": "Competitor",
+                "top_serp_leaders": "Leader SERP Top"
+            }
         },
         "keywords": {
             "related": "Parole Chiave Correlate",
-            "questions": "Domande poste dagli utenti",
-            "ideas": "Idee per Contenuti"
+            "questions": "Le Persone Chiedono",
+            "ideas": "Idee per Contenuti",
+            "people_also_search": "Le persone cercano anche",
+            "google_autocomplete": "Completamento automatico Google",
+            "target_keywords_ai": "Parole chiave target (AI)",
+            "essential_content": "Elementi Essenziali del Contenuto",
+            "autocomplete": "Correlati & autocomplete"
+        },
+        "trend_analysis": {
+            "title": "Analisi dei Trend",
+            "subtitle": "Google Trends 12 mesi",
+            "chart_title": "Trend 12 Mesi"
+        },
+        "forum_insights": {
+            "title": "Insight dai Forum",
+            "subtitle": "Analisi Reddit & Quora"
         },
         "discussion_insights": {
             "title": "Approfondimenti Discussione",
             "sentiment": "Sentimento",
             "forums": "Discussioni & Forum"
         },
+        "strategy": {
+            "title": "Strategia d'Azione"
+        },
         "stats": {
             "countries": "Paesi",
             "languages": "Lingue",
-            "sources": "Fonti"
+            "sources": "Fonti",
+            "ai_model": "GPT-4 AI"
+        },
+        "forms": {
+            "region": "Regione",
+            "language": "Lingua"
         },
         "footer": {
-            "powered_by": "Offerto da"
+            "developed_by": "Sviluppato dal team"
         }
     },
     "results": {
