@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { LogIn, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-export default function Login() {
+export default function LoginForm({ dict }: { dict: any }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +29,7 @@ export default function Login() {
                 setError("Email not verified. Redirecting...");
                 setTimeout(() => router.push(`/verify?email=${encodeURIComponent(email)}`), 1500);
             } else {
-                setError(err.response?.data?.message || "Login failed");
+                setError(err.response?.data?.message || dict?.auth?.login?.error_generic || "Login failed");
             }
         } finally {
             setLoading(false);
@@ -37,6 +38,11 @@ export default function Login() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#0a0a0c] relative overflow-hidden">
+            {/* Language Switcher */}
+            <div className="absolute top-4 right-4 z-50">
+                <LanguageSwitcher />
+            </div>
+
             {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#0a0a0c] to-[#0a0a0c]"></div>
             <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -44,15 +50,15 @@ export default function Login() {
 
             <div className="w-full max-w-md p-8 bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl relative z-10 transition-all duration-300 hover:shadow-indigo-500/10">
                 <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400 mb-2">Welcome Back</h2>
-                    <p className="text-zinc-500 text-sm">Sign in to continue your SEO journey.</p>
+                    <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400 mb-2">{dict?.auth?.login?.title || "Welcome Back"}</h2>
+                    <p className="text-zinc-500 text-sm">{dict?.auth?.login?.subtitle || "Sign in to continue your SEO journey."}</p>
                 </div>
 
                 {error && <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm text-center flex items-center justify-center gap-2 animate-in fade-in slide-in-from-top-2">⚠️ {error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">Email</label>
+                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">{dict?.auth?.login?.email || "Email"}</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Mail className="h-5 w-5 text-zinc-500 group-focus-within:text-indigo-400 transition-colors" />
@@ -70,8 +76,8 @@ export default function Login() {
 
                     <div className="space-y-2">
                         <div className="flex justify-between items-center ml-1">
-                            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Password</label>
-                            <Link href="/forgot-password" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Forgot Password?</Link>
+                            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{dict?.auth?.login?.password || "Password"}</label>
+                            <Link href="/forgot-password" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">{dict?.auth?.login?.forgot || "Forgot Password?"}</Link>
                         </div>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -104,7 +110,7 @@ export default function Login() {
                             <span>Logging in...</span>
                         ) : (
                             <>
-                                <span>Sign In</span>
+                                <span>{dict?.auth?.login?.button || "Sign In"}</span>
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </>
                         )}
@@ -113,9 +119,9 @@ export default function Login() {
 
                 <div className="mt-8 text-center">
                     <p className="text-zinc-500 text-sm">
-                        Don't have an account?{" "}
+                        {dict?.auth?.login?.no_account || "Don't have an account?"}{" "}
                         <Link href="/register" className="text-white hover:text-indigo-400 font-medium transition-colors">
-                            Create Account
+                            {dict?.auth?.login?.signup || "Create Account"}
                         </Link>
                     </p>
                 </div>

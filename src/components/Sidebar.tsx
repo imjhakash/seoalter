@@ -17,13 +17,14 @@ interface User {
 }
 
 interface SidebarProps {
-    history?: HistoryItem[];
+    history: HistoryItem[];
     onSelectHistory: (id: string) => void;
     onNewAnalysis: () => void;
-    activeSearchId?: string | null;
+    activeSearchId: string | null;
     isOpen: boolean;
     onClose: () => void;
-    user: User | null;
+    user: { email: string; usageCount: number; maxUsage: number; } | null;
+    dict: any;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -33,24 +34,19 @@ const Sidebar: React.FC<SidebarProps> = ({
     activeSearchId,
     isOpen,
     onClose,
-    user
+    user,
+    dict
 }) => {
     const router = useRouter();
 
     const handleLogout = async () => {
         try {
-            // Clear cookie via API or just client side removal if possible (httpOnly needs API)
-            // Since we use httpOnly, we usually need an API route to clear it.
-            // For now, let's assume we just redirect to login and let the previous token expire or be overwritten.
-            // Ideally we should have /api/auth/logout. I'll just clear the cookie by setting it to expired in a new request if I had that route.
-            // I'll create a simple client-side "logout" by forcing a reload or just redirecting. 
-            // Actually, the proper way is to call an endpoint. I didn't create one.
-            // I'll just redirect to /login for now.
-            // Better: Set a tool to create logout route? No, I'll just redirect.
-            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            router.push('/login');
+            // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            await axios.post('/api/auth/logout');
+            window.location.href = '/login';
         } catch (error) {
             console.error(error);
+            window.location.href = '/login';
         }
     };
 
@@ -107,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                             ></div>
                         </div>
                         <div className="flex justify-between text-[10px] text-zinc-500 font-medium uppercase tracking-wider">
-                            <span>Usage</span>
+                            <span>{dict?.sidebar?.quota || 'Usage'}</span>
                             <span>{user.usageCount} / {user.maxUsage}</span>
                         </div>
                     </div>
@@ -132,13 +128,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                             }`}
                     >
                         <Plus className={`w-5 h-5 ${user && user.usageCount >= user.maxUsage ? 'text-zinc-600' : 'text-emerald-400 group-hover:text-white'} transition-colors`} />
-                        <span className="font-medium text-sm">New Analysis</span>
+                        <span className="font-medium text-sm">{dict?.sidebar?.new_analysis || 'New Analysis'}</span>
                     </button>
                 </div>
 
                 {/* History List */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar px-3 py-2 space-y-1">
-                    <p className="px-2 text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 mt-2">Recent Searches</p>
+                    <p className="px-2 text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 mt-2">{dict?.sidebar?.history || 'History'}</p>
                     {history.map((item) => (
                         <button
                             key={item._id}
@@ -165,13 +161,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 {/* Footer / Settings */}
-                <div className="p-4 mt-auto border-t border-white/5 space-y-1">
+                <div className="p-4 mt-auto border-t border-white/5 bg-zinc-900/50">
                     <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all group"
                     >
                         <LogOut className="w-5 h-5" />
-                        <span className="font-medium text-sm">Logout</span>
+                        <span className="font-medium text-sm">{dict?.sidebar?.logout || 'Logout'}</span>
                     </button>
                 </div>
             </aside>

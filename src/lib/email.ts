@@ -10,30 +10,35 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendVerificationEmail = async (email: string, code: string) => {
+import { getDictionary } from './get-dictionary';
+
+export const sendVerificationEmail = async (email: string, code: string, lang: 'en' | 'nl' | 'it' = 'en') => {
+    const dict = await getDictionary(lang);
     const mailOptions = {
         from: `"SEO Alter Support" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Verify your email",
-        html: `<p>Your verification code is: <strong>${code}</strong></p><p>It expires in 15 minutes.</p>`,
+        subject: dict.emails.verification.subject,
+        html: dict.emails.verification.body.replace('{code}', code),
     };
 
     await transporter.sendMail(mailOptions);
 };
 
-export const sendAnalysisResultEmail = async (email: string, content: string) => {
+export const sendAnalysisResultEmail = async (email: string, content: string, lang: 'en' | 'nl' | 'it' = 'en') => {
+    const dict = await getDictionary(lang);
     const mailOptions = {
         from: `"SEO Alter Support" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Your Analysis is Ready",
-        html: `<p>Here is your analysis result:</p><br/>${content}<br/><p>Thank you for using our service.</p>`,
+        subject: dict.emails.analysis.subject,
+        html: dict.emails.analysis.body.replace('{content}', content),
     };
 
     await transporter.sendMail(mailOptions);
 };
 
 
-export const sendPasswordResetEmail = async (email: string, token: string) => {
+export const sendPasswordResetEmail = async (email: string, token: string, lang: 'en' | 'nl' | 'it' = 'en') => {
+    const dict = await getDictionary(lang);
     // Correctly resolve the Base URL for Vercel or Localhost
     let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -47,13 +52,14 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
     console.log("Resolved Base URL for Email:", baseUrl); // Debug log
 
-    const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+    // Use lang in the reset URL so the page opens in correct lang
+    const resetUrl = `${baseUrl}/${lang}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
         from: `"SEO Alter Support" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Reset your password",
-        html: `<p>You requested a password reset.</p><p>Click the link below to reset your password:</p><a href="${resetUrl}">Reset Password</a><p>It expires in 1 hour.</p>`,
+        subject: dict.emails.reset.subject,
+        html: dict.emails.reset.body.replace('{url}', resetUrl),
     };
 
     try {

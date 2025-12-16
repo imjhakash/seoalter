@@ -9,11 +9,12 @@ import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import User from '@/lib/models/User';
 import { sendAnalysisResultEmail } from '@/lib/email';
+import { getDictionary } from '@/lib/get-dictionary';
 import { JwtPayload } from 'jsonwebtoken';
 
 export async function POST(request: NextRequest) {
     try {
-        const { query, region, language } = await request.json();
+        const { query, region, language = 'en' } = await request.json();
 
         if (!query) {
             return NextResponse.json({ error: 'Query required' }, { status: 400 });
@@ -160,7 +161,15 @@ export async function POST(request: NextRequest) {
         await user.save();
 
         try {
-            await sendAnalysisResultEmail(user.email, `<h3>Analysis Complete for "${query}"</h3><p>We have successfully analyzed your query.</p>`);
+            const dict = await getDictionary(language);
+            // We construct a simple message content. The wrapper body is in email.ts
+            // We can localize "Analysis Complete for..." using dict if we add a key, or just format it generically.
+            // For now let's assume english hardcoded title but pass language to email.ts so wrapper is localized.
+            // Better: use dict for the inner content too if possible, or just send the query.
+            // Let's use a generic string we can construct or add to dict.
+            // I'll add a generic localized string "Analysis for {query} is complete." to the dict later or just use English inner content for now but localized wrapper.
+            // Actually, I can use a simple string construction.
+            await sendAnalysisResultEmail(user.email, `<h3>${query}</h3>`, language);
         } catch (e) {
             console.error("Failed to send analysis email", e);
         }

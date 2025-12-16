@@ -7,6 +7,7 @@ import axios from 'axios';
 interface ChatAssistantProps {
     contextData?: Record<string, unknown> | object | null;
     contextId?: string | null;
+    lang?: string;
 }
 
 interface Message {
@@ -19,7 +20,7 @@ interface SmartButton {
     prompt: string;
 }
 
-const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId }) => {
+const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId, lang = 'en' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         { role: 'system', content: 'Hello! I am your SEO Assistant. Ask me anything about the data or general SEO strategy.' }
@@ -38,7 +39,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId })
     const fetchSmartButtons = async () => {
         try {
             const res = await axios.get('/api/smart-buttons', {
-                params: { contextId, query: (contextData as Record<string, unknown>)?.query }
+                params: { contextId, query: (contextData as Record<string, unknown>)?.query, language: lang }
             });
             setQuickQuestions(res.data.buttons || []);
         } catch (error) {
@@ -73,7 +74,8 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ contextData, contextId })
             const res = await axios.post('/api/chat', {
                 message: msgText,
                 contextId: contextId,
-                query: (contextData as Record<string, unknown>)?.query
+                query: (contextData as Record<string, unknown>)?.query,
+                language: lang
             });
             setMessages(prev => [...prev, { role: 'assistant', content: res.data.reply }]);
         } catch (error) {

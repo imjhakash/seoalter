@@ -7,7 +7,7 @@ import crypto from 'crypto';
 
 export async function POST(req: Request) {
     try {
-        const { email, password } = await req.json();
+        const { email, password, lang = 'en' } = await req.json();
 
         if (!email || !password) {
             return NextResponse.json({ message: 'Missing email or password' }, { status: 400 });
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         });
 
         try {
-            await sendVerificationEmail(email, verificationCode);
+            await sendVerificationEmail(email, verificationCode, lang);
         } catch (error: any) {
             console.error('Email send error:', error);
             // Return 500 but with specific message if in dev or just general error

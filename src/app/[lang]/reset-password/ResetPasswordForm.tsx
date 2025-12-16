@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
-function ResetPasswordContent() {
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+
+function ResetPasswordContent({ dict }: { dict: any }) {
     const searchParams = useSearchParams();
     const email = searchParams.get("email") || "";
     const token = searchParams.get("token") || "";
@@ -21,7 +23,7 @@ function ResetPasswordContent() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
-            setError("Passwords do not match");
+            setError(dict?.auth?.reset?.error_mismatch || "Passwords do not match");
             return;
         }
         setLoading(true);
@@ -30,10 +32,10 @@ function ResetPasswordContent() {
 
         try {
             await axios.post("/api/auth/reset-password", { email, token, newPassword });
-            setMessage("Password reset successful! Redirecting to login...");
+            setMessage(dict?.auth?.reset?.success || "Password reset successful! Redirecting to login...");
             setTimeout(() => router.push("/login"), 2000);
         } catch (err: any) {
-            setError(err.response?.data?.message || "Reset failed. Token may be expired.");
+            setError(err.response?.data?.message || dict?.auth?.reset?.error_generic || "Reset failed. Token may be expired.");
         } finally {
             setLoading(false);
         }
@@ -41,6 +43,11 @@ function ResetPasswordContent() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#0a0a0c] relative overflow-hidden">
+            {/* Language Switcher */}
+            <div className="absolute top-4 right-4 z-50">
+                <LanguageSwitcher />
+            </div>
+
             {/* Background Gradients */}
             <div className="absolute -top-20 -right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -50,8 +57,8 @@ function ResetPasswordContent() {
                     <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-full flex items-center justify-center border border-white/5">
                         <Lock className="w-8 h-8 text-emerald-400" />
                     </div>
-                    <h2 className="text-3xl font-bold text-white mb-2">Reset Password</h2>
-                    <p className="text-zinc-400 text-sm">Enter your new password below.</p>
+                    <h2 className="text-3xl font-bold text-white mb-2">{dict?.auth?.reset?.title || "Reset Password"}</h2>
+                    <p className="text-zinc-400 text-sm">{dict?.auth?.reset?.subtitle || "Enter your new password below."}</p>
                 </div>
 
                 {message && <div className="mb-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">{message}</div>}
@@ -59,7 +66,7 @@ function ResetPasswordContent() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">New Password</label>
+                        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{dict?.auth?.reset?.password || "New Password"}</label>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -79,7 +86,7 @@ function ResetPasswordContent() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Confirm Password</label>
+                        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{dict?.auth?.reset?.confirm || "Confirm Password"}</label>
                         <input
                             type="password"
                             value={confirmPassword}
@@ -95,7 +102,7 @@ function ResetPasswordContent() {
                         disabled={loading}
                         className="w-full px-4 py-3 font-bold text-white bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-xl hover:from-emerald-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/25"
                     >
-                        {loading ? "Resetting..." : "Set New Password"}
+                        {loading ? (dict?.auth?.reset?.loading || "Resetting...") : (dict?.auth?.reset?.button || "Set New Password")}
                     </button>
                 </form>
             </div>
@@ -103,10 +110,10 @@ function ResetPasswordContent() {
     );
 }
 
-export default function ResetPassword() {
+export default function ResetPassword({ dict }: { dict: any }) {
     return (
         <Suspense fallback={<div className="text-white text-center mt-10">Loading...</div>}>
-            <ResetPasswordContent />
+            <ResetPasswordContent dict={dict} />
         </Suspense>
     );
 }

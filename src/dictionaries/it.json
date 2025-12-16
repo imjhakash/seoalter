@@ -1,0 +1,79 @@
+{
+    "auth": {
+        "login": {
+            "title": "Bentornato",
+            "subtitle": "Accedi per continuare su SEO Alter",
+            "email": "Indirizzo Email",
+            "password": "Password",
+            "button": "Accedi",
+            "forgot": "Password dimenticata?",
+            "no_account": "Non hai un account?",
+            "signup": "Iscriviti",
+            "error_generic": "Qualcosa è andato storto"
+        },
+        "register": {
+            "title": "Inizia Ora",
+            "subtitle": "Crea il tuo account gratuito per accedere alla SEO con AI.",
+            "email": "Indirizzo Email",
+            "password": "Password",
+            "button": "Iscriviti Gratis",
+            "has_account": "Hai già un account?",
+            "signin": "Accedi"
+        },
+        "verify": {
+            "title": "Verifica la tua email",
+            "subtitle": "Abbiamo inviato un codice a",
+            "code_label": "Codice di Verifica",
+            "button": "Verifica Email",
+            "resend": "Invia di nuovo"
+        },
+        "reset": {
+            "title": "Reimposta Password",
+            "subtitle": "Inserisci la tua nuova password qui sotto.",
+            "new_pass_label": "Nuova Password",
+            "confirm_pass_label": "Conferma Password",
+            "button": "Reimposta Password"
+        },
+        "forgot": {
+            "title": "Password Dimenticata",
+            "subtitle": "Inserisci la tua email per ricevere un link di reset.",
+            "button": "Invia Link di Reset",
+            "back": "Torna al Login"
+        }
+    },
+    "sidebar": {
+        "new_analysis": "Nuova Analisi",
+        "history": "Cronologia",
+        "logout": "Disconnetti",
+        "profile": "Profilo",
+        "quota": "Quota"
+    },
+    "dashboard": {
+        "title": "Cosa vuoi ricercare oggi?",
+        "placeholder": "Inserisci una keyword, un argomento o una domanda...",
+        "analyze_button": "Analizza"
+    },
+    "results": {
+        "overview": "Panoramica",
+        "trends": "Tendenze",
+        "organic": "Organico",
+        "questions": "Domande",
+        "related": "Correlati",
+        "strategy": "Strategia",
+        "chat_placeholder": "Chiedi all'AI su questa analisi..."
+    },
+    "emails": {
+        "verification": {
+            "subject": "Verifica la tua email",
+            "body": "<p>Il tuo codice di verifica è: <strong>{code}</strong></p><p>Scade tra 15 minuti.</p>"
+        },
+        "reset": {
+            "subject": "Reimposta la tua password",
+            "body": "<p>Hai richiesto la reimpostazione della password.</p><p>Clicca sul link qui sotto per reimpostare la tua password:</p><a href=\"{url}\">Reimposta Password</a><p>Scade tra 1 ora.</p>"
+        },
+        "analysis": {
+            "subject": "La tua analisi è pronta",
+            "body": "<p>Ecco il risultato della tua analisi:</p><br/>{content}<br/><p>Grazie per aver utilizzato il nostro servizio.</p>"
+        }
+    }
+}

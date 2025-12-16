@@ -6,7 +6,7 @@ import crypto from 'crypto';
 
 export async function POST(req: Request) {
     try {
-        const { email } = await req.json();
+        const { email, lang = 'en' } = await req.json();
 
         if (!email) {
             return NextResponse.json({ message: 'Missing email' }, { status: 400 });
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         await user.save();
 
         try {
-            await sendPasswordResetEmail(email, resetToken);
+            await sendPasswordResetEmail(email, resetToken, lang);
         } catch (error) {
             console.error("Email send error:", error);
             return NextResponse.json({ message: 'Error sending email' }, { status: 500 });

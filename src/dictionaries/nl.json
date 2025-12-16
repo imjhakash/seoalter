@@ -1,0 +1,79 @@
+{
+    "auth": {
+        "login": {
+            "title": "Welkom Terug",
+            "subtitle": "Log in om verder te gaan naar SEO Alter",
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
+            "button": "Inloggen",
+            "forgot": "Wachtwoord vergeten?",
+            "no_account": "Heb je geen account?",
+            "signup": "Aanmelden",
+            "error_generic": "Er is iets misgegaan"
+        },
+        "register": {
+            "title": "Aan de slag",
+            "subtitle": "Maak een gratis account aan voor AI-gestuurde SEO.",
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
+            "button": "Gratis Aanmelden",
+            "has_account": "Heb je al een account?",
+            "signin": "Inloggen"
+        },
+        "verify": {
+            "title": "Verifieer je e-mail",
+            "subtitle": "We hebben een code gestuurd naar",
+            "code_label": "Verificatiecode",
+            "button": "Verifieer E-mail",
+            "resend": "Code opnieuw sturen"
+        },
+        "reset": {
+            "title": "Wachtwoord Resetten",
+            "subtitle": "Voer hieronder je nieuwe wachtwoord in.",
+            "new_pass_label": "Nieuw Wachtwoord",
+            "confirm_pass_label": "Bevestig Wachtwoord",
+            "button": "Reset Wachtwoord"
+        },
+        "forgot": {
+            "title": "Wachtwoord Vergeten",
+            "subtitle": "Voer je e-mail in om een resetlink te ontvangen.",
+            "button": "Stuur Resetlink",
+            "back": "Terug naar Inloggen"
+        }
+    },
+    "sidebar": {
+        "new_analysis": "Nieuwe Analyse",
+        "history": "Geschiedenis",
+        "logout": "Uitloggen",
+        "profile": "Profiel",
+        "quota": "Quotaboek"
+    },
+    "dashboard": {
+        "title": "Wat wil je vandaag onderzoeken?",
+        "placeholder": "Voer een zoekwoord, onderwerp of vraag in...",
+        "analyze_button": "Analyseren"
+    },
+    "results": {
+        "overview": "Overzicht",
+        "trends": "Trends",
+        "organic": "Organisch",
+        "questions": "Vragen",
+        "related": "Gerelateerd",
+        "strategy": "Strategie",
+        "chat_placeholder": "Vraag AI over deze analyse..."
+    },
+    "emails": {
+        "verification": {
+            "subject": "Verifieer uw e-mail",
+            "body": "<p>Uw verificatiecode is: <strong>{code}</strong></p><p>Deze vervalt over 15 minuten.</p>"
+        },
+        "reset": {
+            "subject": "Wachtwoord resetten",
+            "body": "<p>U heeft een wachtwoordreset aangevraagd.</p><p>Klik op de link hieronder om uw wachtwoord te resetten:</p><a href=\"{url}\">Wachtwoord Resetten</a><p>Deze vervalt over 1 uur.</p>"
+        },
+        "analysis": {
+            "subject": "Uw analyse is klaar",
+            "body": "<p>Hier is uw analyseresultaat:</p><br/>{content}<br/><p>Bedankt voor het gebruik van onze service.</p>"
+        }
+    }
+}

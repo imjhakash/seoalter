@@ -1,0 +1,79 @@
+{
+    "auth": {
+        "login": {
+            "title": "Welcome Back",
+            "subtitle": "Sign in to continue to SEO Alter",
+            "email": "Email Address",
+            "password": "Password",
+            "button": "Sign In",
+            "forgot": "Forgot Password?",
+            "no_account": "Don't have an account?",
+            "signup": "Sign Up",
+            "error_generic": "Something went wrong"
+        },
+        "register": {
+            "title": "Get Started",
+            "subtitle": "Create your free account to access AI-powered SEO.",
+            "email": "Email Address",
+            "password": "Password",
+            "button": "Sign Up Free",
+            "has_account": "Already have an account?",
+            "signin": "Log In"
+        },
+        "verify": {
+            "title": "Verify your email",
+            "subtitle": "We sent a code to",
+            "code_label": "Verification Code",
+            "button": "Verify Email",
+            "resend": "Resend Code"
+        },
+        "reset": {
+            "title": "Reset Password",
+            "subtitle": "Enter your new password below.",
+            "new_pass_label": "New Password",
+            "confirm_pass_label": "Confirm Password",
+            "button": "Reset Password"
+        },
+        "forgot": {
+            "title": "Forgot Password",
+            "subtitle": "Enter your email to receive a reset link.",
+            "button": "Send Reset Link",
+            "back": "Back to Login"
+        }
+    },
+    "sidebar": {
+        "new_analysis": "New Analysis",
+        "history": "History",
+        "logout": "Logout",
+        "profile": "Profile",
+        "quota": "Quota"
+    },
+    "dashboard": {
+        "title": "What do you want to research today?",
+        "placeholder": "Enter a keyword, topic, or question...",
+        "analyze_button": "Analyze"
+    },
+    "results": {
+        "overview": "Overview",
+        "trends": "Trends",
+        "organic": "Organic",
+        "questions": "Questions",
+        "related": "Related",
+        "strategy": "Strategy",
+        "chat_placeholder": "Ask AI about this analysis..."
+    },
+    "emails": {
+        "verification": {
+            "subject": "Verify your email",
+            "body": "<p>Your verification code is: <strong>{code}</strong></p><p>It expires in 15 minutes.</p>"
+        },
+        "reset": {
+            "subject": "Reset your password",
+            "body": "<p>You requested a password reset.</p><p>Click the link below to reset your password:</p><a href=\"{url}\">Reset Password</a><p>It expires in 1 hour.</p>"
+        },
+        "analysis": {
+            "subject": "Your Analysis is Ready",
+            "body": "<p>Here is your analysis result:</p><br/>{content}<br/><p>Thank you for using our service.</p>"
+        }
+    }
+}

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import ChatAssistant from './ChatAssistant';
 import Sidebar from './Sidebar';
+import LanguageSwitcher from './LanguageSwitcher';
 
 interface HistoryItem {
     _id: string;
@@ -45,9 +46,9 @@ interface VizData {
     };
 }
 
-const Dashboard = () => {
+const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
     const [region, setRegion] = useState('us');
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState(lang || 'en');
     const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
     const [currentSearchId, setCurrentSearchId] = useState<string | null>(null);
     const [query, setQuery] = useState('');
@@ -58,7 +59,15 @@ const Dashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const [user, setUser] = useState<{ email: string; usageCount: number; maxUsage: number; } | null>(null);
-    const router = useRouter(); // Import useRouter from next/navigation needed at top
+    const router = useRouter();
+
+    // Sync language state with prop if needed, or primarily use prop for UI
+    useEffect(() => {
+        if (lang) {
+            setLanguage(lang);
+        }
+    }, [lang]);
+
 
     // Modify chartData to depend on user state if needed (not strict, but good practice)
     const chartData = useMemo(() => {
@@ -646,6 +655,7 @@ const Dashboard = () => {
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
                 user={user}
+                dict={dict}
             /><main className="flex-1 ml-0 md:ml-64 h-screen overflow-y-auto">
                 {/* Mobile Header */}
                 <div className="md:hidden flex items-center gap-3 p-4 border-b border-white/5 bg-zinc-950/80 backdrop-blur sticky top-0 z-30">
@@ -660,6 +670,9 @@ const Dashboard = () => {
                         renderLoading()
                     ) : (
                         <>
+                            <div className="flex justify-end mb-4">
+                                <LanguageSwitcher />
+                            </div>
                             {!data && (
                                 <div className="space-y-8 md:space-y-12 pb-10">
                                     <div className="text-center space-y-4 pt-4 md:pt-8 px-2">
@@ -670,8 +683,7 @@ const Dashboard = () => {
                                             </h1>
                                         </div>
                                         <p className="text-sm sm:text-base md:text-lg text-zinc-400 max-w-xl mx-auto px-4">
-                                            Real-time <span className="text-emerald-400 font-semibold">SEO Intelligence</span> powered by AI.
-                                            Analyze keywords, track trends, dominate rankings.
+                                            {dict.dashboard.title || "Real-time SEO Intelligence powered by AI."}
                                         </p>
                                     </div>
 
@@ -685,7 +697,7 @@ const Dashboard = () => {
                                                         type="text"
                                                         value={query}
                                                         onChange={(e) => setQuery(e.target.value)}
-                                                        placeholder="Enter keyword..."
+                                                        placeholder={dict.dashboard.placeholder || "Enter a keyword..."}
                                                         className="w-full bg-zinc-800/50 border border-emerald-500/20 focus:border-emerald-500/50 rounded-lg text-base sm:text-lg pl-10 pr-4 py-3 text-white placeholder-zinc-500 focus:outline-none transition"
                                                     />
                                                 </div>
@@ -841,7 +853,7 @@ const Dashboard = () => {
                 </div>
             </main>
 
-            {data && <ChatAssistant contextData={data} contextId={currentSearchId} />}
+            {data && <ChatAssistant contextData={data} contextId={currentSearchId} lang={language} />}
         </div>
     );
 };

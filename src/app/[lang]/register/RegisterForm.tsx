@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { UserPlus, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-export default function Register() {
+export default function RegisterForm({ dict }: { dict: any }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const params = useParams();
+    const lang = params.lang || 'en';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -20,8 +23,8 @@ export default function Register() {
         setError("");
 
         try {
-            await axios.post("/api/auth/register", { email, password });
-            router.push(`/verify?email=${encodeURIComponent(email)}`);
+            await axios.post("/api/auth/register", { email, password, lang });
+            router.push(`/${lang}/verify?email=${encodeURIComponent(email)}`);
         } catch (err: any) {
             console.error(err);
             const serverMsg = err.response?.data?.message || "Registration failed";
@@ -34,6 +37,11 @@ export default function Register() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#0a0a0c] relative overflow-hidden">
+            {/* Language Switcher */}
+            <div className="absolute top-4 right-4 z-50">
+                <LanguageSwitcher />
+            </div>
+
             {/* Background Gradients */}
             <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from- emerald-900/20 via-[#0a0a0c] to-[#0a0a0c]"></div>
             <div className="absolute top-20 left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -41,15 +49,15 @@ export default function Register() {
 
             <div className="w-full max-w-md p-8 bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl relative z-10 transition-all duration-300 hover:shadow-emerald-500/10">
                 <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200 mb-2">Get Started</h2>
-                    <p className="text-zinc-500 text-sm">Create your free account to access AI-powered SEO.</p>
+                    <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200 mb-2">{dict?.auth?.register?.title || "Get Started"}</h2>
+                    <p className="text-zinc-500 text-sm">{dict?.auth?.register?.subtitle || "Create your free account to access AI-powered SEO."}</p>
                 </div>
 
                 {error && <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm text-center flex items-center justify-center gap-2 animate-in fade-in slide-in-from-top-2">⚠️ {error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">Email Address</label>
+                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">{dict?.auth?.register?.email || "Email Address"}</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Mail className="h-5 w-5 text-zinc-500 group-focus-within:text-emerald-400 transition-colors" />
@@ -66,7 +74,7 @@ export default function Register() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">Password</label>
+                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">{dict?.auth?.register?.password || "Password"}</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Lock className="h-5 w-5 text-zinc-500 group-focus-within:text-teal-400 transition-colors" />
@@ -98,7 +106,7 @@ export default function Register() {
                             <span>Creating Account...</span>
                         ) : (
                             <>
-                                <span>Sign Up Free</span>
+                                <span>{dict?.auth?.register?.button || "Sign Up Free"}</span>
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </>
                         )}
@@ -107,9 +115,9 @@ export default function Register() {
 
                 <div className="mt-8 text-center">
                     <p className="text-zinc-500 text-sm">
-                        Already have an account?{" "}
+                        {dict?.auth?.register?.has_account || "Already have an account?"}{" "}
                         <Link href="/login" className="text-white hover:text-emerald-400 font-medium transition-colors">
-                            Log In
+                            {dict?.auth?.register?.signin || "Log In"}
                         </Link>
                     </p>
                 </div>

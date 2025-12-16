@@ -7,7 +7,7 @@ import { normalizeQuery } from '@/lib/utils/serpManager';
 
 export async function POST(request: NextRequest) {
     try {
-        const { message, contextId, query } = await request.json();
+        const { message, contextId, query, language = 'en' } = await request.json();
 
         const openaiKey = process.env.OPENAI_API_KEY;
         if (!openaiKey) {
@@ -36,9 +36,17 @@ export async function POST(request: NextRequest) {
             }
         }
 
+        // Map lang code to full language name
+        const langMap: Record<string, string> = {
+            'en': 'English',
+            'nl': 'Dutch',
+            'it': 'Italian'
+        };
+        const targetLang = langMap[language] || 'English';
+
         const systemPrompt = dataset
-            ? `You are a helpful SEO assistant. Use the following analyzed dataset as the source of truth. Keep your response concise (3-10 lines). Only fallback to general knowledge if necessary. Dataset JSON: ${JSON.stringify(dataset).slice(0, 25000)}`
-            : 'You are a helpful SEO assistant. Keep your response concise (3-10 lines). If no dataset is provided, ask the user to run an analysis first.';
+            ? `You are a helpful SEO assistant. Use the following analyzed dataset as the source of truth. Keep your response concise (3-10 lines). Only fallback to general knowledge if necessary. Reply in ${targetLang}. Dataset JSON: ${JSON.stringify(dataset).slice(0, 25000)}`
+            : `You are a helpful SEO assistant. Keep your response concise (3-10 lines). If no dataset is provided, ask the user to run an analysis first. Reply in ${targetLang}.`;
 
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-4o-mini",
