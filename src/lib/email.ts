@@ -45,6 +45,8 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
         }
     }
 
+    console.log("Resolved Base URL for Email:", baseUrl); // Debug log
+
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
