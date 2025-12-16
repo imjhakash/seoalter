@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
         let dataset = null;
         let searchId = contextId;
-        
+
         if (contextId) {
             const history = await SearchHistory.findById(contextId);
             if (history) {
@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
         }
 
         const systemPrompt = dataset
-            ? `You are a helpful SEO assistant. Use the following analyzed dataset as the source of truth when answering. If the user asks for keywords, clusters, questions, or strategy, prefer the dataset. Dataset JSON: ${JSON.stringify(dataset).slice(0, 25000)}`
-            : 'You are a helpful SEO assistant. If no dataset is provided, ask the user to run an analysis first.';
+            ? `You are a helpful SEO assistant. Use the following analyzed dataset as the source of truth. Keep your response concise (3-10 lines). Only fallback to general knowledge if necessary. Dataset JSON: ${JSON.stringify(dataset).slice(0, 25000)}`
+            : 'You are a helpful SEO assistant. Keep your response concise (3-10 lines). If no dataset is provided, ask the user to run an analysis first.';
 
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-4o-mini",
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         });
 
         const reply = response.data.choices[0].message.content;
-        
+
         if (searchId) {
             await ChatInteraction.create({
                 searchId,

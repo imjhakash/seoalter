@@ -55,8 +55,8 @@ export async function POST(request: NextRequest) {
 
         const queryNormalized = normalizeQuery(query);
 
-        // 1. Check History (no duplicate SERP + GPT cost)
-        let history = await SearchHistory.findOne({ queryNormalized });
+        // 1. Check History (User Specific)
+        let history = await SearchHistory.findOne({ queryNormalized, userId: user._id });
         if (history) {
             // Update timestamp to move to top of history
             history.createdAt = new Date();
@@ -73,6 +73,9 @@ export async function POST(request: NextRequest) {
                 visualization: visualization ? visualization.data : null
             });
         }
+
+        // ... (FETCH SERP - Skipped for brevity) ...
+
 
         // 2. Fetch SERP Data
         const serpBundle = await fetchSerpBundle(query, serpKey, region || 'us', language || 'en');
@@ -147,7 +150,8 @@ export async function POST(request: NextRequest) {
             query: serpBundle.query,
             queryNormalized: serpBundle.queryNormalized,
             analyzedData: analysis,
-            visualizationId: visualizationDoc?._id
+            visualizationId: visualizationDoc?._id,
+            userId: user._id // Link to User
         });
         await history.save();
 
