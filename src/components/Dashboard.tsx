@@ -8,6 +8,8 @@ import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContai
 import ChatAssistant from './ChatAssistant';
 import Sidebar from './Sidebar';
 import LanguageSwitcher from './LanguageSwitcher';
+import HowItWorks from './HowItWorks';
+import AnalysisProgress from './AnalysisProgress';
 
 interface HistoryItem {
     _id: string;
@@ -269,20 +271,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
     ];
 
     const renderLoading = () => (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8">
-            <div className="relative w-32 h-32">
-                <div className="absolute inset-0 border-t-4 border-indigo-500 rounded-full animate-spin"></div>
-                <div className="absolute inset-2 border-r-4 border-purple-500 rounded-full animate-spin animation-delay-200"></div>
-                <div className="absolute inset-4 border-b-4 border-pink-500 rounded-full animate-spin animation-delay-500"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <Sparkles className="w-8 h-8 text-white animate-pulse" />
-                </div>
-            </div>
-            <div className="text-center space-y-2">
-                <h3 className="text-2xl font-bold text-white animate-pulse">{dict?.dashboard?.loading?.title || "Analyzing SERP Data..."}</h3>
-                <p className="text-zinc-400">{(dict?.dashboard?.loading?.subtitle || "Scanning Google Trends, Forums, and Competitors for \"{query}\" in {region}").replace('{query}', query).replace('{region}', regions.find(r => r.code === region)?.name || region)}</p>
-            </div>
-        </div>
+        <AnalysisProgress query={query} />
     );
 
     const renderOverview = () => (
@@ -715,20 +704,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
 
 
                                     {/* How it works */}
-                                    <div className="grid grid-cols-3 gap-8 w-full max-w-2xl mt-12 pt-12 border-t border-white/5 opacity-50 hover:opacity-100 transition-opacity">
-                                        <div className="text-center space-y-2">
-                                            <div className="w-10 h-10 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-indigo-400 font-bold border border-indigo-500/20">1</div>
-                                            <p className="text-xs text-zinc-400 font-medium">{dict?.dashboard?.how_it_works?.step1 || "1. Enter Keyword"}</p>
-                                        </div>
-                                        <div className="text-center space-y-2">
-                                            <div className="w-10 h-10 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-purple-400 font-bold border border-purple-500/20">2</div>
-                                            <p className="text-xs text-zinc-400 font-medium">{dict?.dashboard?.how_it_works?.step2 || "2. SERP Scraping"}</p>
-                                        </div>
-                                        <div className="text-center space-y-2">
-                                            <div className="w-10 h-10 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-pink-400 font-bold border border-pink-500/20">3</div>
-                                            <p className="text-xs text-zinc-400 font-medium">{dict?.dashboard?.how_it_works?.step3 || "3. AI Analysis"}</p>
-                                        </div>
-                                    </div>
+                                    <HowItWorks dict={dict} />
                                 </div>
                             )}
 

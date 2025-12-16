@@ -6,6 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import { UserPlus, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 export default function RegisterForm({ dict }: { dict: any }) {
     const [email, setEmail] = useState("");
@@ -43,9 +44,10 @@ export default function RegisterForm({ dict }: { dict: any }) {
             </div>
 
             {/* Background Gradients */}
-            <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from- emerald-900/20 via-[#0a0a0c] to-[#0a0a0c]"></div>
-            <div className="absolute top-20 left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-20 right-20 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-pulse animation-delay-1000"></div>
+            <AnimatedBackground />
+            <div className="fixed bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from- emerald-900/20 via-[#0a0a0c] to-[#0a0a0c] pointer-events-none"></div>
+            <div className="fixed top-20 left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
+            <div className="fixed bottom-20 right-20 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-pulse animation-delay-1000 pointer-events-none"></div>
 
             <div className="w-full max-w-6xl flex flex-col md:flex-row shadow-2xl rounded-2xl overflow-hidden z-10">
                 {/* Marketing Side */}
