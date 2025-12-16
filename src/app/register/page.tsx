@@ -23,7 +23,10 @@ export default function Register() {
             await axios.post("/api/auth/register", { email, password });
             router.push(`/verify?email=${encodeURIComponent(email)}`);
         } catch (err: any) {
-            setError(err.response?.data?.message || "Registration failed");
+            console.error(err);
+            const serverMsg = err.response?.data?.message || "Registration failed";
+            const debugErr = err.response?.data?.error || "";
+            setError(`${serverMsg} ${debugErr ? `(${debugErr})` : ""}`);
         } finally {
             setLoading(false);
         }

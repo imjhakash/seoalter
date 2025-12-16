@@ -39,7 +39,7 @@ export async function POST(req: Request) {
             // If email fails, we should probably warn the user but creating the account is done.
             // But strict verification means they can't login.
             return NextResponse.json({
-                message: 'User created but failed to send verification email. Please contact support.',
+                message: `User created but email failed: ${error.message}`,
                 debugError: error.message
             }, { status: 500 });
         }
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     } catch (error: any) {
         console.error('Registration error:', error);
         return NextResponse.json({
-            message: 'Internal Server Error',
+            message: `Internal Server Error: ${error.message}`, // Append error to message so UI shows it
             error: error.message,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         }, { status: 500 });
