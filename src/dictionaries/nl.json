@@ -162,5 +162,62 @@
         "input_placeholder": "Stel vervolgvragen...",
         "quick_actions": "Snelle Acties",
         "system_label": "Systeem"
+    },
+    "landing": {
+        "nav": {
+            "how_it_works": "Hoe het werkt",
+            "features": "Functies",
+            "faq": "Veelgestelde vragen",
+            "login": "Inloggen",
+            "get_started": "Beginnen"
+        },
+        "hero": {
+            "badge": "AI-gestuurde SERP-intelligentie",
+            "title": "Domineer zoeken met",
+            "title_highlight": "Real-Time Data",
+            "subtitle": "Stop met gissen. Krijg direct diepgaande inzichten van live Google-resultaten, Reddit-discussies en concurrentiekloven.",
+            "cta_primary": "3 Gratis Credits",
+            "cta_secondary": "Hoe het werkt",
+            "no_card": "Geen creditcard nodig",
+            "free_searches": "3 gratis zoekopdrachten"
+        },
+        "how_it_works": {
+            "title": "Hoe het werkt",
+            "subtitle": "Wij gebruiken geen statische databases. Wij scannen het live web op het moment dat u zoekt."
+        },
+        "transparency": {
+            "title": "Transparante",
+            "title_highlight": "Databronnen",
+            "subtitle": "De meeste SEO-tools vertrouwen op verouderde databases. Wij geloven in versheid. Wanneer u een rapport uitvoert, activeren we:",
+            "list": {
+                "google_serp": "Live Google SERP Scraping",
+                "google_trends": "Real-time Google Trends analyse",
+                "reddit_quora": "Reddit & Quora discussies mining",
+                "competitor_gap": "AI Competitor Gap detectie"
+            },
+            "live_data_badge": "Live Data"
+        },
+        "faq": {
+            "title": "Veelgestelde Vragen",
+            "subtitle": "Alles wat u moet weten over SEOAlter.",
+            "questions": {
+                "q1": {
+                    "q": "Is de analyse echt gratis?",
+                    "a": "Ja! Elk nieuw account krijgt 3 gratis credits om uitgebreide SEO-analyses uit te voeren. Geen creditcard nodig om te beginnen."
+                },
+                "q2": {
+                    "q": "Waar halen jullie de data vandaan?",
+                    "a": "We gebruiken officiële Google SERP API's in combinatie met real-time scraping van Reddit, Quora en concurrentensites."
+                },
+                "q3": {
+                    "q": "Hoe nauwkeurig is de moeilijkheidsscore?",
+                    "a": "Onze moeilijkheidsscore wordt berekend op basis van backlinkprofielen, domeinautoriteit en contentdiepte."
+                },
+                "q4": {
+                    "q": "Kan ik specifieke landen targeten?",
+                    "a": "Absoluut. We ondersteunen meer dan 40 regio's en talen."
+                }
+            }
+        }
     }
 }

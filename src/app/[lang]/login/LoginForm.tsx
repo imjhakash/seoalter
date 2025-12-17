@@ -23,7 +23,7 @@ export default function LoginForm({ dict }: { dict: any }) {
 
         try {
             await axios.post("/api/auth/login", { email, password });
-            router.push("/");
+            router.push("/dashboard");
             router.refresh();
         } catch (err: any) {
             if (err.response?.status === 403 && err.response?.data?.isVerified === false) {

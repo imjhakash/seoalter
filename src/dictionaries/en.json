@@ -162,5 +162,62 @@
         "input_placeholder": "Ask follow-up questions...",
         "quick_actions": "Quick Actions",
         "system_label": "System"
+    },
+    "landing": {
+        "nav": {
+            "how_it_works": "How it Works",
+            "features": "Features",
+            "faq": "FAQ",
+            "login": "Log In",
+            "get_started": "Get Started"
+        },
+        "hero": {
+            "badge": "AI-Powered SERP Intelligence",
+            "title": "Dominate Search with",
+            "title_highlight": "Real-Time Data",
+            "subtitle": "Stop guessing. Get deep insights from live Google results, Reddit discussions, and competitor gaps instantly.",
+            "cta_primary": "Get 3 Free Credits",
+            "cta_secondary": "How It Works",
+            "no_card": "No credit card required",
+            "free_searches": "3 free searches"
+        },
+        "how_it_works": {
+            "title": "How It Works",
+            "subtitle": "We don't just use static databases. We scan the live web the moment you search."
+        },
+        "transparency": {
+            "title": "Transparent",
+            "title_highlight": "Data Sources",
+            "subtitle": "Most SEO tools rely on outdated databases. We believe in freshness. When you run a report, we trigger:",
+            "list": {
+                "google_serp": "Live Google SERP Scraping",
+                "google_trends": "Real-time Google Trends Analysis",
+                "reddit_quora": "Reddit & Quora Discussion Mining",
+                "competitor_gap": "AI Competitor Gap Detection"
+            },
+            "live_data_badge": "Live Data"
+        },
+        "faq": {
+            "title": "Frequently Asked Questions",
+            "subtitle": "Everything you need to know about SEOAlter.",
+            "questions": {
+                "q1": {
+                    "q": "Is the analysis really free?",
+                    "a": "Yes! Every new account gets 3 free credits to perform comprehensive SEO analysis. No credit card required to start."
+                },
+                "q2": {
+                    "q": "Where do you get the data?",
+                    "a": "We use official Google SERP APIs combined with real-time scraping of Reddit, Quora, and competitor sites. Our AI then synthesizes this raw data into actionable insights."
+                },
+                "q3": {
+                    "q": "How accurate is the difficulty score?",
+                    "a": "Our Difficulty Score is calculated based on backlink profiles, domain authority, and content depth of the current top-ranking pages."
+                },
+                "q4": {
+                    "q": "Can I target specific countries?",
+                    "a": "Absolutely. We support over 40+ regions and languages, allowing you to get localized insights for any market."
+                }
+            }
+        }
     }
 }

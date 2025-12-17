@@ -162,5 +162,63 @@
         "input_placeholder": "Fai domande di approfondimento...",
         "quick_actions": "Azioni Rapide",
         "system_label": "Sistema"
+    },
+    "landing": {
+        "nav": {
+            "how_it_works": "Come funziona",
+            "features": "Funzionalità",
+            "faq": "FAQ",
+            "login": "Accedi",
+            "get_started": "Inizia",
+            "how_it_works_title": "Come Funziona"
+        },
+        "hero": {
+            "badge": "Intelligenza SERP basata su AI",
+            "title": "Domina la ricerca con",
+            "title_highlight": "Dati in Tempo Reale",
+            "subtitle": "Ottieni approfondimenti immediati dai risultati live di Google, discussioni Reddit e gap dei competitor.",
+            "cta_primary": "3 Crediti Gratuiti",
+            "cta_secondary": "Come Funziona",
+            "no_card": "Nessuna carta di credito richiesta",
+            "free_searches": "3 ricerche gratuite"
+        },
+        "how_it_works": {
+            "title": "Come Funziona",
+            "subtitle": "Non usiamo database statici. Scansioniamo il web in tempo reale nel momento in cui cerchi."
+        },
+        "transparency": {
+            "title": "Fonti Dati",
+            "title_highlight": "Trasparenti",
+            "subtitle": "La maggior parte degli strumenti SEO si affida a database obsoleti. Noi crediamo nella freschezza. Quando esegui un report, attiviamo:",
+            "list": {
+                "google_serp": "Scraping Live Google SERP",
+                "google_trends": "Analisi Google Trends in tempo reale",
+                "reddit_quora": "Mining discussioni Reddit & Quora",
+                "competitor_gap": "Rilevamento Gap Competitor AI"
+            },
+            "live_data_badge": "Dati Live"
+        },
+        "faq": {
+            "title": "Domande Frequenti",
+            "subtitle": "Tutto quello che devi sapere su SEOAlter.",
+            "questions": {
+                "q1": {
+                    "q": "L'analisi è davvero gratuita?",
+                    "a": "Sì! Ogni nuovo account riceve 3 crediti gratuiti per eseguire analisi SEO complete. Nessuna carta di credito richiesta."
+                },
+                "q2": {
+                    "q": "Da dove prendete i dati?",
+                    "a": "Utilizziamo API ufficiali Google SERP combinate con scraping in tempo reale di Reddit, Quora e siti dei competitor."
+                },
+                "q3": {
+                    "q": "Quanto è accurato il punteggio di difficoltà?",
+                    "a": "Il nostro punteggio di difficoltà è calcolato in base ai profili backlink, all'autorità del dominio e alla profondità dei contenuti."
+                },
+                "q4": {
+                    "q": "Posso targettizzare paesi specifici?",
+                    "a": "Assolutamente. Supportiamo oltre 40 regioni e lingue."
+                }
+            }
+        }
     }
 }
