@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        if (user.usageCount >= user.maxUsage) {
+        if (user.usageCount >= user.maxUsage && user.email !== 'helloatjh@gmail.com') {
             return NextResponse.json({ error: 'Usage limit exceeded (3/3). Please contact support.' }, { status: 403 });
         }
         // ---------------------------
@@ -157,8 +157,10 @@ export async function POST(request: NextRequest) {
         await history.save();
 
         // --- UPDATE QUOTA & SEND EMAIL ---
-        user.usageCount += 1;
-        await user.save();
+        if (user.email !== 'helloatjh@gmail.com') {
+            user.usageCount += 1;
+            await user.save();
+        }
 
         try {
             const dict = await getDictionary(language);
