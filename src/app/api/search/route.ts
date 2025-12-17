@@ -56,24 +56,10 @@ export async function POST(request: NextRequest) {
 
         const queryNormalized = normalizeQuery(query);
 
-        // 1. Check History (User Specific)
-        let history = await SearchHistory.findOne({ queryNormalized, userId: user._id });
-        if (history) {
-            // Update timestamp to move to top of history
-            history.createdAt = new Date();
-            await history.save();
+        // 1. Check History (User Specific) - REMOVED to allow fresh searches
+        // Previously checked for existing history and returned it. 
+        // Now we always proceed to fetch new data and create a new history entry.
 
-            const visualization = history.visualizationId
-                ? await Visualization.findById(history.visualizationId)
-                : await Visualization.findOne({ queryNormalized });
-
-            return NextResponse.json({
-                source: 'cache',
-                data: history.analyzedData,
-                searchId: history._id,
-                visualization: visualization ? visualization.data : null
-            });
-        }
 
         // ... (FETCH SERP - Skipped for brevity) ...
 
@@ -147,7 +133,7 @@ export async function POST(request: NextRequest) {
         analysis.autocomplete = (serpBundle.sources.google_autocomplete as { data?: { suggestions?: unknown[] } })?.data?.suggestions || [];
 
         // 6. Save to History
-        history = new SearchHistory({
+        const history = new SearchHistory({
             query: serpBundle.query,
             queryNormalized: serpBundle.queryNormalized,
             analyzedData: analysis,

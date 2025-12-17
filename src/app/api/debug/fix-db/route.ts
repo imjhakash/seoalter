@@ -6,15 +6,22 @@ export async function GET() {
     try {
         await connectDB();
 
-        // Attempt to drop the unique index
         try {
+            const indexes = await SearchHistory.collection.indexes();
             await SearchHistory.collection.dropIndex('queryNormalized_1');
-            return NextResponse.json({ message: 'Index queryNormalized_1 dropped successfully.' });
-        } catch (idxError: any) {
-            if (idxError.codeName === 'IndexNotFound') {
-                return NextResponse.json({ message: 'Index not found, maybe already dropped.' });
-            }
-            throw idxError;
+            const indexesAfter = await SearchHistory.collection.indexes();
+
+            return NextResponse.json({
+                message: 'Attempted to drop index.',
+                before: indexes,
+                after: indexesAfter
+            });
+        } catch (error: any) {
+            return NextResponse.json({
+                message: 'Error managing indexes',
+                error: error.message,
+                indexes: await SearchHistory.collection.indexes().catch(() => 'Could not list')
+            });
         }
 
     } catch (error) {
