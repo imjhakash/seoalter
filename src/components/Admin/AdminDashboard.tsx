@@ -57,9 +57,16 @@ export default function AdminDashboard() {
             setUsers(usersRes.data);
             setStats(statsRes.data);
             setLoading(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to fetch admin data", error);
-            setLoading(false);
+            if (error.response && error.response.status === 401) {
+                // Determine current lang from URL or default to 'en'
+                const pathParts = window.location.pathname.split('/');
+                const lang = ['en', 'nl', 'it'].includes(pathParts[1]) ? pathParts[1] : 'en';
+                window.location.href = `/${lang}/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+            } else {
+                setLoading(false);
+            }
         }
     };
 

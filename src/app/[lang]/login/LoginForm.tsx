@@ -23,7 +23,12 @@ export default function LoginForm({ dict }: { dict: any }) {
 
         try {
             await axios.post("/api/auth/login", { email, password });
-            router.push("/dashboard");
+
+            // Check for redirect param
+            const params = new URLSearchParams(window.location.search);
+            const redirect = params.get('redirect') || '/dashboard';
+
+            router.push(redirect);
             router.refresh();
         } catch (err: any) {
             if (err.response?.status === 403 && err.response?.data?.isVerified === false) {
