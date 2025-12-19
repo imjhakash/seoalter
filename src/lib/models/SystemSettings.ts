@@ -3,12 +3,16 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ISystemSettings extends Document {
     openaiKey?: string;
     serpKey?: string;
+    dataForSeoLogin?: string;
+    dataForSeoPassword?: string;
     updatedAt: Date;
 }
 
 const SystemSettingsSchema = new Schema<ISystemSettings>({
     openaiKey: { type: String, select: false }, // Hide by default for security
     serpKey: { type: String, select: false },
+    dataForSeoLogin: { type: String, select: false },
+    dataForSeoPassword: { type: String, select: false },
     updatedAt: { type: Date, default: Date.now }
 });
 

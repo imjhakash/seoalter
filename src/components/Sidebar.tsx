@@ -109,8 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                 )}
 
-                {/* New Analysis Button */}
-                <div className="px-3 mb-2">
+                <div className="px-3 mb-2 space-y-1">
                     <button
                         onClick={() => {
                             if (user && user.usageCount >= user.maxUsage) {
@@ -129,6 +128,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                     >
                         <Plus className={`w-5 h-5 ${user && user.usageCount >= user.maxUsage ? 'text-zinc-600' : 'text-emerald-400 group-hover:text-white'} transition-colors`} />
                         <span className="font-medium text-sm">{dict?.sidebar?.new_analysis || 'New Analysis'}</span>
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            router.push('/dashboard/keyword-research');
+                            if (typeof window !== 'undefined' && window.innerWidth < 768) onClose?.();
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group hover:bg-white/5 text-zinc-400 hover:text-white"
+                    >
+                        <Search className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+                        <span className="font-medium text-sm">Keyword Research</span>
                     </button>
                 </div>
 

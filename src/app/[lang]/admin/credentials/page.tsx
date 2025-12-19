@@ -8,9 +8,15 @@ import Link from 'next/link';
 export default function AdminCredentialsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [keys, setKeys] = useState({ openaiKey: '', serpKey: '' });
+    const [keys, setKeys] = useState({
+        openaiKey: '',
+        serpKey: '',
+        dataForSeoLogin: '',
+        dataForSeoPassword: ''
+    });
     const [showOpenAI, setShowOpenAI] = useState(false);
     const [showSerp, setShowSerp] = useState(false);
+    const [showDfs, setShowDfs] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
 
     useEffect(() => {
@@ -22,7 +28,9 @@ export default function AdminCredentialsPage() {
             const res = await axios.get('/api/admin/credentials');
             setKeys({
                 openaiKey: res.data.openaiKey || '',
-                serpKey: res.data.serpKey || ''
+                serpKey: res.data.serpKey || '',
+                dataForSeoLogin: res.data.dataForSeoLogin || '',
+                dataForSeoPassword: res.data.dataForSeoPassword || ''
             });
             setLoading(false);
         } catch (error) {
@@ -39,7 +47,9 @@ export default function AdminCredentialsPage() {
         try {
             await axios.post('/api/admin/credentials', {
                 openaiKey: keys.openaiKey,
-                serpKey: keys.serpKey
+                serpKey: keys.serpKey,
+                dataForSeoLogin: keys.dataForSeoLogin,
+                dataForSeoPassword: keys.dataForSeoPassword
             });
             setMessage({ text: 'Credentials updated successfully!', type: 'success' });
             // Refresh to get masked versions if backend returns them, though here we just keep what user typed or masked
@@ -126,6 +136,48 @@ export default function AdminCredentialsPage() {
                                 </button>
                             </div>
                             <p className="text-xs text-zinc-500">Used for fetching search results and ranking data.</p>
+                        </div>
+
+                        {/* DataForSEO Credentials */}
+                        <div className="space-y-4 pt-4 border-t border-white/10">
+                            <h3 className="text-lg font-bold text-emerald-400">DataForSEO Credentials (Keyword Research)</h3>
+
+                            <div className="space-y-4">
+                                <label className="flex items-center gap-2 text-sm font-medium text-zinc-300">
+                                    <Key className="w-4 h-4 text-purple-500" />
+                                    API Login
+                                </label>
+                                <input
+                                    type="text"
+                                    value={keys.dataForSeoLogin}
+                                    onChange={(e) => setKeys({ ...keys, dataForSeoLogin: e.target.value })}
+                                    placeholder="DataForSEO Login Email"
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500/50 transition-colors text-white placeholder-zinc-700"
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <label className="flex items-center gap-2 text-sm font-medium text-zinc-300">
+                                    <Key className="w-4 h-4 text-purple-500" />
+                                    API Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showDfs ? "text" : "password"}
+                                        value={keys.dataForSeoPassword}
+                                        onChange={(e) => setKeys({ ...keys, dataForSeoPassword: e.target.value })}
+                                        placeholder="DataForSEO API Password"
+                                        className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:border-emerald-500/50 transition-colors text-white placeholder-zinc-700"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDfs(!showDfs)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                                    >
+                                        {showDfs ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         {message.text && (

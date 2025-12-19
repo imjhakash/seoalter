@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { openaiKey, serpKey } = await request.json();
+        const { openaiKey, serpKey, dataForSeoLogin, dataForSeoPassword } = await request.json();
 
         await connectDB();
 
@@ -72,6 +72,9 @@ export async function POST(request: NextRequest) {
 
         if (openaiKey) settings.openaiKey = openaiKey;
         if (serpKey) settings.serpKey = serpKey;
+        if (dataForSeoLogin) settings.dataForSeoLogin = dataForSeoLogin;
+        if (dataForSeoPassword) settings.dataForSeoPassword = dataForSeoPassword;
+
         settings.updatedAt = new Date();
 
         await settings.save();
