@@ -2,24 +2,35 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Search, MapPin, Globe, Loader2, DollarSign, BarChart2, TrendingUp, AlertCircle, Download } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Search, MapPin, Globe, Loader2, AlertCircle, Settings, ChevronDown, ChevronUp, Layers, List } from 'lucide-react';
 
 interface KeywordResult {
     keyword: string;
     search_volume: number;
     cpc: number;
     competition: number;
-    trends?: number[]; // Optional trend data if available
+    trends?: number[];
 }
 
 export default function KeywordResearchPage() {
-    const [keyword, setKeyword] = useState('');
+    // Mode: 'related' or 'volume'
+    const [mode, setMode] = useState<'related' | 'volume'>('related');
+
+    // Common State
+    const [keyword, setKeyword] = useState(''); // For Related
+    const [bulkKeywords, setBulkKeywords] = useState(''); // For Volume
     const [location, setLocation] = useState(2840); // US Default
     const [language, setLanguage] = useState('en');
     const [results, setResults] = useState<KeywordResult[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Advanced State for Related
+    const [showAdvanced, setShowAdvanced] = useState(false);
+    const [depth, setDepth] = useState(2);
+    const [limit, setLimit] = useState(50);
+    const [includeSeed, setIncludeSeed] = useState(true);
+    const [ignoreSynonyms, setIgnoreSynonyms] = useState(false);
 
     const locations = [
         { code: 2840, name: 'United States' },
@@ -41,18 +52,35 @@ export default function KeywordResearchPage() {
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!keyword) return;
+
+        // Validation
+        if (mode === 'related' && !keyword) return;
+        if (mode === 'volume' && !bulkKeywords) return;
 
         setLoading(true);
         setError('');
         setResults([]);
 
         try {
-            const res = await axios.post('/api/tools/keyword-research', {
-                keyword,
+            const payload: any = {
+                mode,
                 location_code: location,
                 language_code: language
-            });
+            };
+
+            if (mode === 'related') {
+                payload.keyword = keyword;
+                payload.depth = depth;
+                payload.limit = limit;
+                payload.include_seed_keyword = includeSeed;
+                payload.ignore_synonyms = ignoreSynonyms;
+            } else {
+                // Split by new lines or commas and clean
+                const kws = bulkKeywords.split(/[\n,]+/).map(k => k.trim()).filter(k => k);
+                payload.keywords = kws;
+            }
+
+            const res = await axios.post('/api/tools/keyword-research', payload);
 
             if (res.data.error) {
                 setError(res.data.error);
@@ -60,7 +88,7 @@ export default function KeywordResearchPage() {
                 setResults(res.data.items || []);
             }
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Failed to fetch data. Please try again.');
+            setError(err.response?.data?.error || 'Failed to fetch keyword data.');
         } finally {
             setLoading(false);
         }
@@ -71,64 +99,182 @@ export default function KeywordResearchPage() {
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold text-white mb-2">Keyword Intelligence</h1>
-                <p className="text-zinc-400">Discover high-value keywords with real-time data from Google.</p>
+                <p className="text-zinc-400">
+                    {mode === 'related'
+                        ? 'Discover new keyword opportunities based on a seed term.'
+                        : 'Get exact search volumes for a list of keywords.'}
+                </p>
             </div>
 
-            {/* Search Bar */}
-            <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl">
-                <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div className="md:col-span-5 relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                        <input
-                            type="text"
-                            value={keyword}
-                            onChange={(e) => setKeyword(e.target.value)}
-                            placeholder="Enter a seed keyword (e.g. 'vegan recipes')"
-                            className="w-full bg-black/20 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors placeholder-zinc-600"
-                        />
-                    </div>
+            {/* Main Control Panel */}
+            <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
 
-                    <div className="md:col-span-3 relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                        <select
-                            value={location}
-                            onChange={(e) => setLocation(Number(e.target.value))}
-                            className="w-full bg-black/20 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors appearance-none cursor-pointer"
-                        >
-                            {locations.map(loc => (
-                                <option key={loc.code} value={loc.code} className='bg-zinc-900'>{loc.name}</option>
-                            ))}
-                        </select>
-                    </div>
+                {/* Mode Tabs */}
+                <div className="flex border-b border-white/5">
+                    <button
+                        onClick={() => { setMode('related'); setResults([]); }}
+                        className={`flex-1 flex items-center justify-center gap-2 py-4 text-sm font-medium transition-colors
+                            ${mode === 'related' ? 'bg-emerald-500/10 text-emerald-400 border-b-2 border-emerald-500' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
+                    >
+                        <Layers className="w-4 h-4" />
+                        Related Keywords
+                    </button>
+                    <button
+                        onClick={() => { setMode('volume'); setResults([]); }}
+                        className={`flex-1 flex items-center justify-center gap-2 py-4 text-sm font-medium transition-colors
+                            ${mode === 'volume' ? 'bg-emerald-500/10 text-emerald-400 border-b-2 border-emerald-500' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
+                    >
+                        <List className="w-4 h-4" />
+                        Bulk Search Volume
+                    </button>
+                </div>
 
-                    <div className="md:col-span-2 relative">
-                        <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                        <select
-                            value={language}
-                            onChange={(e) => setLanguage(e.target.value)}
-                            className="w-full bg-black/20 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors appearance-none cursor-pointer"
-                        >
-                            {languages.map(lang => (
-                                <option key={lang.code} value={lang.code} className="bg-zinc-900">{lang.name}</option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="p-6">
+                    <form onSubmit={handleSearch} className="space-y-6">
 
-                    <div className="md:col-span-2">
+                        {/* Keyword Input Area */}
+                        {mode === 'related' ? (
+                            <div className="relative">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                <input
+                                    type="text"
+                                    value={keyword}
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                    placeholder="Enter a seed keyword (e.g. 'vegan recipes')"
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors placeholder-zinc-600"
+                                />
+                            </div>
+                        ) : (
+                            <div>
+                                <textarea
+                                    value={bulkKeywords}
+                                    onChange={(e) => setBulkKeywords(e.target.value)}
+                                    placeholder="Enter keywords (one per line)&#10;digital marketing&#10;seo tools&#10;content strategy"
+                                    rows={5}
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors placeholder-zinc-600 resize-none font-mono text-sm"
+                                />
+                                <p className="text-right text-xs text-zinc-500 mt-2">Enter up to 100 keywords</p>
+                            </div>
+                        )}
+
+                        {/* Common Filters: Location & Language */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="relative">
+                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                <select
+                                    value={location}
+                                    onChange={(e) => setLocation(Number(e.target.value))}
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors appearance-none cursor-pointer"
+                                >
+                                    {locations.map(loc => (
+                                        <option key={loc.code} value={loc.code} className='bg-zinc-900'>{loc.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="relative">
+                                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                <select
+                                    value={language}
+                                    onChange={(e) => setLanguage(e.target.value)}
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-emerald-500/50 transition-colors appearance-none cursor-pointer"
+                                >
+                                    {languages.map(lang => (
+                                        <option key={lang.code} value={lang.code} className="bg-zinc-900">{lang.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Advanced Settings (Related Mode Only) */}
+                        {mode === 'related' && (
+                            <div className="border border-white/5 rounded-xl bg-zinc-900/20">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAdvanced(!showAdvanced)}
+                                    className="w-full flex items-center justify-between p-4 text-zinc-400 hover:text-white transition-colors"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Settings className="w-4 h-4" />
+                                        <span className="text-sm font-medium">Advanced Parameters</span>
+                                    </div>
+                                    {showAdvanced ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                </button>
+
+                                {showAdvanced && (
+                                    <div className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-top-2">
+
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span className="text-zinc-400">Search Depth (1-4)</span>
+                                                <span className="text-emerald-400 font-bold">{depth}</span>
+                                            </div>
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="4"
+                                                step="1"
+                                                value={depth}
+                                                onChange={(e) => setDepth(Number(e.target.value))}
+                                                className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span className="text-zinc-400">Result Limit (10-100)</span>
+                                                <span className="text-emerald-400 font-bold">{limit}</span>
+                                            </div>
+                                            <input
+                                                type="range"
+                                                min="10"
+                                                max="100"
+                                                step="10"
+                                                value={limit}
+                                                onChange={(e) => setLimit(Number(e.target.value))}
+                                                className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                id="includeSeed"
+                                                checked={includeSeed}
+                                                onChange={(e) => setIncludeSeed(e.target.checked)}
+                                                className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-emerald-500 focus:ring-emerald-500/20"
+                                            />
+                                            <label htmlFor="includeSeed" className="text-sm text-zinc-300 font-medium cursor-pointer">Include Seed Keyword</label>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                id="ignoreSynonyms"
+                                                checked={ignoreSynonyms}
+                                                onChange={(e) => setIgnoreSynonyms(e.target.checked)}
+                                                className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-emerald-500 focus:ring-emerald-500/20"
+                                            />
+                                            <label htmlFor="ignoreSynonyms" className="text-sm text-zinc-300 font-medium cursor-pointer">Ignore Synonyms</label>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         <button
                             type="submit"
-                            disabled={loading || !keyword}
-                            className="w-full h-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            disabled={loading}
+                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold h-12 rounded-xl transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
-                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Analyze'}
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Analyze Keywords'}
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
             {/* Error Message */}
             {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-center gap-3 text-red-400">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-center gap-3 text-red-400 animate-in fade-in slide-in-from-top-2">
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <span>{error}</span>
                 </div>
@@ -146,7 +292,7 @@ export default function KeywordResearchPage() {
                         <div className="bg-zinc-900/30 border border-white/5 p-5 rounded-2xl">
                             <p className="text-zinc-500 text-xs uppercase tracking-wider font-semibold mb-1">Avg Search Volume</p>
                             <p className="text-3xl font-bold text-emerald-400">
-                                {Math.round(results.reduce((acc, curr) => acc + curr.search_volume, 0) / results.length).toLocaleString()}
+                                {Math.round(results.reduce((acc, curr) => acc + (curr.search_volume || 0), 0) / results.length).toLocaleString()}
                             </p>
                         </div>
                         <div className="bg-zinc-900/30 border border-white/5 p-5 rounded-2xl">
