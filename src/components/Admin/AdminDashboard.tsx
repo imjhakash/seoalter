@@ -14,6 +14,7 @@ import {
     Search as SearchIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 interface User {
     _id: string;
@@ -124,24 +125,37 @@ export default function AdminDashboard() {
                         </h1>
                         <p className="text-zinc-400 mt-2">Manage users, credits, and view system logs.</p>
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex flex-col gap-4">
+                        <Link href="/en/admin/credentials">
+                            <button className="w-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors rounded-xl p-4 flex items-center gap-4 group">
+                                <div className="p-3 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
+                                    <Database className="w-6 h-6 text-purple-400" />
+                                </div>
+                                <div className="text-left">
+                                    <div className="text-lg font-bold">API Keys</div>
+                                    <div className="text-xs text-zinc-500 uppercase font-bold">Manage Credentials</div>
+                                </div>
+                            </button>
+                        </Link>
                         {/* Stats Cards */}
-                        <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4">
-                            <div className="p-3 bg-indigo-500/20 rounded-lg">
-                                <Users className="w-6 h-6 text-indigo-400" />
+                        <div className="flex gap-4">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4 flex-1">
+                                <div className="p-3 bg-indigo-500/20 rounded-lg">
+                                    <Users className="w-6 h-6 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold">{stats?.totalUsers}</div>
+                                    <div className="text-xs text-zinc-500 uppercase font-bold">Total Users</div>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-2xl font-bold">{stats?.totalUsers}</div>
-                                <div className="text-xs text-zinc-500 uppercase font-bold">Total Users</div>
-                            </div>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4">
-                            <div className="p-3 bg-emerald-500/20 rounded-lg">
-                                <Activity className="w-6 h-6 text-emerald-400" />
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold">{stats?.searchesToday}</div>
-                                <div className="text-xs text-zinc-500 uppercase font-bold">Searches Today</div>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4 flex-1">
+                                <div className="p-3 bg-emerald-500/20 rounded-lg">
+                                    <Activity className="w-6 h-6 text-emerald-400" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold">{stats?.searchesToday}</div>
+                                    <div className="text-xs text-zinc-500 uppercase font-bold">Searches Today</div>
+                                </div>
                             </div>
                         </div>
                     </div>

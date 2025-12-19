@@ -9,13 +9,20 @@ export async function POST(request: NextRequest) {
     try {
         const { message, contextId, query, language = 'en' } = await request.json();
 
-        const openaiKey = process.env.OPENAI_API_KEY;
+        await connectDB();
+
+        // Fetch System Settings for Keys
+        const settings = await import('@/lib/models/SystemSettings').then(m => m.default.findOne({}).select('+openaiKey')); // Dynamic import to avoid circular dep issues if any, or just standard import
+
+        const openaiKey = settings?.openaiKey || process.env.OPENAI_API_KEY;
+
         if (!openaiKey) {
             return NextResponse.json(
-                { error: 'OpenAI API Key not configured in environment variables.' },
+                { error: 'OpenAI API Key not configured. Please contact admin.' },
                 { status: 500 }
             );
         }
+
 
         await connectDB();
 

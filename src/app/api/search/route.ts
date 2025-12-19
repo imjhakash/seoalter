@@ -44,15 +44,21 @@ export async function POST(request: NextRequest) {
         }
         // ---------------------------
 
-        const serpKey = process.env.SERP_API_KEY;
-        const openaiKey = process.env.OPENAI_API_KEY;
+        // ---------------------------
+
+        // Fetch System Settings for Keys
+        const settings = await import('@/lib/models/SystemSettings').then(m => m.default.findOne({}).select('+openaiKey +serpKey'));
+
+        const serpKey = settings?.serpKey || process.env.SERP_API_KEY;
+        const openaiKey = settings?.openaiKey || process.env.OPENAI_API_KEY;
 
         if (!serpKey || !openaiKey) {
             return NextResponse.json(
-                { error: 'API Keys not configured. Please set SERP_API_KEY and OPENAI_API_KEY in environment variables.' },
+                { error: 'API Keys not configured. Please set them in Admin Panel or environment variables.' },
                 { status: 500 }
             );
         }
+
 
         const queryNormalized = normalizeQuery(query);
 
