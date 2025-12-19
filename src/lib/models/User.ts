@@ -34,6 +34,11 @@ const UserSchema = new mongoose.Schema({
     resetTokenExpires: {
         type: Date,
     },
+    keywordResearchAccess: {
+        type: String,
+        enum: ['none', 'requested', 'approved', 'rejected'],
+        default: 'none'
+    },
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

@@ -5,7 +5,7 @@ import connectDB from '@/lib/db';
 import User from '@/lib/models/User';
 import { JwtPayload } from 'jsonwebtoken';
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
@@ -15,11 +15,12 @@ export async function GET(req: NextRequest) {
         if (!decoded || !decoded.userId) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
         await connectDB();
-        const user = await User.findById(decoded.userId).select('email usageCount maxUsage keywordResearchAccess');
 
-        if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        await User.findByIdAndUpdate(decoded.userId, {
+            keywordResearchAccess: 'requested'
+        });
 
-        return NextResponse.json(user);
+        return NextResponse.json({ success: true, message: 'Access requested successfully' });
     } catch (error) {
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }

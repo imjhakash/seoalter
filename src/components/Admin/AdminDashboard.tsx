@@ -22,6 +22,7 @@ interface User {
     usageCount: number;
     maxUsage: number;
     createdAt: string;
+    keywordResearchAccess?: string;
 }
 
 interface Stats {
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState<User[]>([]);
     const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'users' | 'logs'>('users');
+    const [activeTab, setActiveTab] = useState<'users' | 'logs' | 'requests'>('users');
     const [logs, setLogs] = useState<SearchLog[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -180,6 +181,16 @@ export default function AdminDashboard() {
                     >
                         Search Logs
                         {activeTab === 'logs' && (
+                            <motion.div layoutId="underline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+                        )}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('requests')}
+                        className={`pb-4 px-2 font-medium text-sm transition-colors relative ${activeTab === 'requests' ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
+                            }`}
+                    >
+                        Access Requests
+                        {activeTab === 'requests' && (
                             <motion.div layoutId="underline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
                         )}
                     </button>
