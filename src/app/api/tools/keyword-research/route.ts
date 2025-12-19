@@ -24,9 +24,8 @@ export async function POST(request: NextRequest) {
             include_seed_keyword = true,
             ignore_synonyms = false,
             include_clickstream_data = false,
-            include_serp_info = false,
-            replace_with_core_keyword = false,
-            sort_by = "relevance"
+            include_serp_info = true, // Defaulting to true for rich data
+            replace_with_core_keyword = false
         } = body;
 
         // Auth Check
@@ -42,20 +41,16 @@ export async function POST(request: NextRequest) {
         }
 
         await connectDB();
-
-        // Access Check
         const user = await User.findById(decoded.userId);
         if (!user) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        const isSuperadmin = user.email === SUPERADMIN_EMAIL;
-        const accessStatus = user.keywordResearchAccess || 'none';
-
-        if (!isSuperadmin && accessStatus !== 'approved') {
+        // Strict Superadmin Check
+        if (user.email !== SUPERADMIN_EMAIL) {
             return NextResponse.json({
-                error: 'Access Denied',
-                accessStatus: accessStatus
+                error: 'This feature is currently available only for administrators.',
+                isRestricted: true
             }, { status: 403 });
         }
 
@@ -72,7 +67,10 @@ export async function POST(request: NextRequest) {
         const headers = { 'content-type': 'application/json' };
 
         if (mode === 'volume') {
-            // SEARCH VOLUME
+            // SEARCH VOLUME (LABS API for SEO Data)
+            // Endpoint: https://api.dataforseo.com/v3/dataforseo_labs/google/historical_search_volume/live
+            // This provides keyword difficulty and SEO metrics unlike Google Ads API.
+
             const targetKeywords = keywords.length > 0 ? keywords : (keyword ? [keyword] : []);
             if (targetKeywords.length === 0) {
                 return NextResponse.json({ error: 'No keywords provided' }, { status: 400 });
@@ -82,11 +80,11 @@ export async function POST(request: NextRequest) {
                 keywords: targetKeywords,
                 location_code: location_code,
                 language_code: language_code,
-                sort_by: sort_by
+                include_serp_info: include_serp_info
             }];
 
             const response = await axios.post(
-                'https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live',
+                'https://api.dataforseo.com/v3/dataforseo_labs/google/historical_search_volume/live',
                 post_array,
                 { auth, headers }
             );
@@ -96,23 +94,29 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({ items: [] });
             }
 
-            const items = tasks[0].result || [];
+            const items = tasks[0].result[0].items || [];
             const formattedItems = items.map((item: any) => ({
                 keyword: item.keyword,
-                search_volume: item.search_volume,
-                cpc: item.cpc,
-                competition: item.competition,
-                trends: item.monthly_searches ? item.monthly_searches.map((m: any) => ({
+                search_volume: item.keyword_info?.search_volume,
+                cpc: item.keyword_info?.cpc,
+                competition: item.keyword_info?.competition_level, // Ad competition
+                difficulty: item.keyword_properties?.keyword_difficulty, // SEO Difficulty (0-100)
+                low_bid: item.keyword_info?.low_top_of_page_bid,
+                high_bid: item.keyword_info?.high_top_of_page_bid,
+                trends: item.keyword_info?.monthly_searches ? item.keyword_info.monthly_searches.map((m: any) => ({
                     month: m.month,
                     year: m.year,
                     count: m.search_volume
-                })) : []
+                })) : [],
+                intent: item.keyword_properties?.search_intent_info?.main_intent_label || 'unknown' // infer if available or default
             }));
 
             return NextResponse.json({ items: formattedItems });
 
         } else {
             // RELATED KEYWORDS
+            // Endpoint: https://api.dataforseo.com/v3/dataforseo_labs/google/related_keywords/live
+
             const post_array = [{
                 keyword: keyword,
                 location_code: location_code,
@@ -140,10 +144,13 @@ export async function POST(request: NextRequest) {
             const items = tasks[0].result[0].items || [];
             const formattedItems = items.map((item: any) => ({
                 keyword: item.keyword_data.keyword,
-                search_volume: item.keyword_data.keyword_info.search_volume,
-                cpc: item.keyword_data.keyword_info.cpc,
-                competition: item.keyword_data.keyword_info.competition_level,
-                trends: item.keyword_data.keyword_info.monthly_searches ? item.keyword_data.keyword_info.monthly_searches.map((m: any) => ({
+                search_volume: item.keyword_data.keyword_info?.search_volume,
+                cpc: item.keyword_data.keyword_info?.cpc,
+                competition: item.keyword_data.keyword_info?.competition_level,
+                difficulty: item.keyword_data.keyword_properties?.keyword_difficulty, // SEO Difficulty
+                low_bid: item.keyword_data.keyword_info?.low_top_of_page_bid,
+                high_bid: item.keyword_data.keyword_info?.high_top_of_page_bid,
+                trends: item.keyword_data.keyword_info?.monthly_searches ? item.keyword_data.keyword_info.monthly_searches.map((m: any) => ({
                     month: m.month,
                     year: m.year,
                     count: m.search_volume
