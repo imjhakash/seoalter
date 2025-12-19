@@ -410,7 +410,26 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
 
                 {/* Right Column */}
                 <div className="space-y-6">
-                    {/* This column is now empty as Trend and Questions moved */}
+                    {/* People Also Ask */}
+                    <div className="glass-card p-6">
+                        <h3 className="text-sm font-bold text-zinc-400 uppercase mb-4 flex items-center gap-2">
+                            <HelpCircle className="w-4 h-4" /> {dict?.dashboard?.people_also_ask?.title || "People Also Ask"}
+                        </h3>
+                        <div className="space-y-3">
+                            {data?.peopleAlsoAsk && data.peopleAlsoAsk.length > 0 ? (
+                                data.peopleAlsoAsk.map((item, i) => (
+                                    <div key={i} className="flex items-start gap-3 bg-zinc-900/50 p-3 rounded-lg border border-white/5 hover:bg-white/5 transition">
+                                        <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold shrink-0">
+                                            ?
+                                        </div>
+                                        <p className="text-sm text-zinc-300 font-medium">{item.question}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-zinc-500">No related questions found.</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 

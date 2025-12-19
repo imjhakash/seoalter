@@ -20,7 +20,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import AnimatedBackground from "./AnimatedBackground";
 import HowItWorks from "./HowItWorks";
 
-const LandingPage = ({ dict, lang }: { dict: any; lang: string }) => {
+const LandingPage = ({ dict, lang, isLoggedIn }: { dict: any; lang: string; isLoggedIn: boolean }) => {
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
     const faqs = [
@@ -79,10 +79,10 @@ const LandingPage = ({ dict, lang }: { dict: any; lang: string }) => {
                             {dict?.landing?.nav?.login || "Log In"}
                         </Link>
                         <Link
-                            href={`/${lang}/register`}
+                            href={isLoggedIn ? `/${lang}/dashboard` : `/${lang}/register`}
                             className="px-5 py-2 rounded-full bg-white text-black font-bold text-sm hover:bg-emerald-50 transition shadow-lg shadow-white/10"
                         >
-                            {dict?.landing?.nav?.get_started || "Get Started"}
+                            {isLoggedIn ? (dict?.landing?.nav?.dashboard || "Dashboard") : (dict?.landing?.nav?.get_started || "Get Started")}
                         </Link>
                     </div>
                 </div>
@@ -114,11 +114,11 @@ const LandingPage = ({ dict, lang }: { dict: any; lang: string }) => {
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
-                                href={`/${lang}/register`}
+                                href={isLoggedIn ? `/${lang}/dashboard` : `/${lang}/register`}
                                 className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 group"
                             >
                                 <Zap className="w-5 h-5 fill-white" />
-                                <span>{dict?.landing?.hero?.cta_primary || "Get 3 Free Credits"}</span>
+                                <span>{isLoggedIn ? (dict?.landing?.nav?.dashboard || "Go to Dashboard") : (dict?.landing?.hero?.cta_primary || "Get 3 Free Credits")}</span>
                                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Link>
                             <a

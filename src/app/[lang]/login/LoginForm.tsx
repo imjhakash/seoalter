@@ -11,6 +11,7 @@ import AnimatedBackground from "@/components/AnimatedBackground";
 export default function LoginForm({ dict }: { dict: any }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export default function LoginForm({ dict }: { dict: any }) {
         setError("");
 
         try {
-            await axios.post("/api/auth/login", { email, password });
+            await axios.post("/api/auth/login", { email, password, rememberMe });
 
             // Check for redirect param
             const params = new URLSearchParams(window.location.search);
@@ -130,7 +131,12 @@ export default function LoginForm({ dict }: { dict: any }) {
 
                         <div className="flex items-center justify-between text-sm">
                             <label className="flex items-center gap-2 cursor-pointer text-zinc-400 hover:text-zinc-300 transition">
-                                <input type="checkbox" className="rounded bg-zinc-800 border-zinc-700 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0" />
+                                <input
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    className="rounded bg-zinc-800 border-zinc-700 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                                />
                                 {dict?.auth?.remember_me || "Remember Me"}
                             </label>
                             <Link href="/forgot-password" className="text-indigo-400 hover:text-indigo-300 transition-colors">{dict?.auth?.login?.forgot || "Forgot Password?"}</Link>

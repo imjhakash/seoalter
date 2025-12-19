@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 export async function POST(req: Request) {
     try {
-        const { email, password } = await req.json();
+        const { email, password, rememberMe } = await req.json();
 
         await connectDB();
 
@@ -30,10 +30,17 @@ export async function POST(req: Request) {
 
         // Set HTTP-only cookie
         const cookieStore = await cookies();
+
+        // Let's do it in one go if I knew line 9 content exactly.
+        // Max Age: 1 week default, 30 days if rememberMe? Or session if not? 
+        // Typically: Session (undefined maxAge) if not rememberMe, but JWT needs expiration.
+        // Let's say 1 day vs 30 days. Or 7 days vs 30 days.
+        const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7;
+
         cookieStore.set('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7, // 1 week
+            maxAge: maxAge,
             path: '/',
         });
 
