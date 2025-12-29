@@ -92,7 +92,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
         const init = async () => {
             try {
                 const userRes = await axios.get('/api/auth/me');
-                setUser(userRes.data.user);
+                setUser(userRes.data);
 
                 fetchHistory();
                 const lastId = typeof window !== 'undefined' ? localStorage.getItem('lastSearchId') : null;

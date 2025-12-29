@@ -24,13 +24,19 @@ export async function POST(request: NextRequest) {
         const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
 
+        console.log('[API/Search] Token present:', !!token);
+
         if (!token) {
-            return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+            console.error('[API/Search] No token found in cookies');
+            return NextResponse.json({ error: 'Authentication required: Missing Token' }, { status: 401 });
         }
 
         const decoded = verifyToken(token) as JwtPayload | null;
+        console.log('[API/Search] Decoded token:', decoded ? 'Valid' : 'Invalid', decoded);
+
         if (!decoded || !decoded.userId) {
-            return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+            console.error('[API/Search] Invalid token or missing userId');
+            return NextResponse.json({ error: 'Authentication required: Invalid Token' }, { status: 401 });
         }
 
         await connectDB();
