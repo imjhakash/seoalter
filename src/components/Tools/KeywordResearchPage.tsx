@@ -46,8 +46,8 @@ export default function KeywordResearchPage() {
     const checkAccess = async () => {
         try {
             const res = await axios.get('/api/auth/me');
-            if (res.data.email === 'helloatjh@gmail.com') {
-                setAccessStatus('superadmin');
+            if (res.data.email) {
+                setAccessStatus('superadmin'); // Treat all authenticated as superadmin for UI access for now
             } else {
                 setAccessStatus('none');
             }
@@ -255,7 +255,7 @@ export default function KeywordResearchPage() {
                         <div className="bg-zinc-900/30 border border-white/5 p-4 rounded-2xl">
                             <p className="text-zinc-500 text-[10px] uppercase tracking-wider font-bold">AVG Difficulty</p>
                             <p className={`text-xl font-bold ${(results.reduce((acc, curr) => acc + (curr.difficulty || 0), 0) / results.length) > 70 ? 'text-red-400' :
-                                    (results.reduce((acc, curr) => acc + (curr.difficulty || 0), 0) / results.length) > 30 ? 'text-yellow-400' : 'text-emerald-400'
+                                (results.reduce((acc, curr) => acc + (curr.difficulty || 0), 0) / results.length) > 30 ? 'text-yellow-400' : 'text-emerald-400'
                                 }`}>
                                 {Math.round(results.reduce((acc, curr) => acc + (curr.difficulty || 0), 0) / results.length)}
                             </p>
@@ -300,7 +300,7 @@ export default function KeywordResearchPage() {
                                             <td className="p-4 text-right">
                                                 {item.difficulty !== undefined ? (
                                                     <span className={`px-2 py-1 rounded text-xs font-bold ${item.difficulty > 70 ? 'bg-red-500/10 text-red-500' :
-                                                            item.difficulty > 30 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-emerald-500/10 text-emerald-500'
+                                                        item.difficulty > 30 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-emerald-500/10 text-emerald-500'
                                                         }`}>
                                                         {item.difficulty}
                                                     </span>
@@ -315,6 +315,15 @@ export default function KeywordResearchPage() {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            )}
+            {results.length === 0 && !loading && !error && (
+                <div className="py-20 flex flex-col items-center text-center space-y-4 bg-zinc-900/20 border border-dashed border-white/5 rounded-3xl">
+                    <Rocket className="w-12 h-12 text-zinc-800" />
+                    <div className="max-w-xs">
+                        <p className="text-zinc-500 font-medium">Ready to discover keywords?</p>
+                        <p className="text-zinc-600 text-sm mt-1">Enter a seed keyword or bulk list above to generate deep SEO intelligence.</p>
                     </div>
                 </div>
             )}

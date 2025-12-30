@@ -11,6 +11,7 @@ import User from '@/lib/models/User';
 import { sendAnalysisResultEmail } from '@/lib/email';
 import { getDictionary } from '@/lib/get-dictionary';
 import { JwtPayload } from 'jsonwebtoken';
+import axios from 'axios';
 
 export async function POST(request: NextRequest) {
     try {
@@ -77,7 +78,19 @@ export async function POST(request: NextRequest) {
 
 
         // 2. Fetch SERP Data
-        const serpBundle = await fetchSerpBundle(query, serpKey, region || 'us', language || 'en');
+        let serpBundle;
+        try {
+            serpBundle = await fetchSerpBundle(query, serpKey, region || 'us', language || 'en');
+        } catch (err: any) {
+            if (axios.isAxiosError(err) && err.response?.status === 401) {
+                console.error("SerpApi 401 Error: Invalid Key");
+                return NextResponse.json(
+                    { error: 'Configuration Error: Invalid SerpApi Key. Please check settings in Admin Panel.' },
+                    { status: 500 }
+                );
+            }
+            throw err;
+        }
 
         // 3. Store raw data per source
         const sourcesEntries = Object.entries(serpBundle.sources || {});

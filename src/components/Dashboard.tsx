@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, TrendingUp, Target, Users, FileText, Globe, Sparkles, HelpCircle, ExternalLink, Layers, MessageCircle, Menu } from 'lucide-react';
+import { Search, TrendingUp, Target, Users, FileText, Globe, Sparkles, HelpCircle, ExternalLink, Layers, MessageCircle, Menu, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import ChatAssistant from './ChatAssistant';
@@ -48,6 +48,17 @@ interface VizData {
     };
 }
 
+interface KeywordResult {
+    keyword: string;
+    search_volume: number;
+    cpc: number;
+    competition: number;
+    difficulty?: number;
+    low_bid?: number;
+    high_bid?: number;
+    trends: { month: number; year: number; count: number }[];
+}
+
 const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
     const [region, setRegion] = useState('us');
     const [language, setLanguage] = useState(lang || 'en');
@@ -60,8 +71,39 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
     const [dashboardTab, setDashboardTab] = useState('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    const [competitorKeywords, setCompetitorKeywords] = useState<KeywordResult[]>([]);
+    const [isKeywordsLoading, setIsKeywordsLoading] = useState(false);
+
     const [user, setUser] = useState<{ email: string; usageCount: number; maxUsage: number; } | null>(null);
     const router = useRouter();
+
+    const handleSeeCompetitorKeywords = async () => {
+        setDashboardTab('keywords');
+        if (competitorKeywords.length > 0) return; // Cache check
+
+        setIsKeywordsLoading(true);
+        try {
+            // Mapping region to location code for DataForSEO (simplified for now)
+            const locationCodes: Record<string, number> = { 'us': 2840, 'gb': 2826, 'ca': 2124, 'au': 2036, 'in': 2356 };
+            const loc = locationCodes[region] || 2840;
+
+            const res = await axios.post('/api/tools/keyword-research', {
+                mode: 'related',
+                keyword: query,
+                location_code: loc,
+                language_code: language,
+                limit: 20
+            });
+
+            if (res.data.items) {
+                setCompetitorKeywords(res.data.items);
+            }
+        } catch (error) {
+            console.error("Failed to fetch competitor keywords:", error);
+        } finally {
+            setIsKeywordsLoading(false);
+        }
+    };
 
     // Sync language state with prop if needed, or primarily use prop for UI
     useEffect(() => {
@@ -144,6 +186,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
         setData(null);
         setQuery('');
         setVizData(null);
+        setCompetitorKeywords([]);
         setCurrentSearchId(null);
         if (typeof window !== 'undefined') {
             localStorage.removeItem('lastSearchId');
@@ -364,8 +407,15 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                 <div className="lg:col-span-2 space-y-6">
                     {/* Competitors */}
                     <div className="glass-card p-6">
-                        <h3 className="text-sm font-bold text-zinc-400 uppercase mb-2 flex items-center gap-2">
-                            <Users className="w-4 h-4" /> {dict?.dashboard?.competitors?.title || "Top Competitors"}
+                        <h3 className="text-sm font-bold text-zinc-400 uppercase mb-2 flex items-center justify-between gap-2">
+                            <span className="flex items-center gap-2 font-bold"><Users className="w-4 h-4" /> {dict?.dashboard?.competitors?.title || "Top Competitors"}</span>
+                            <button
+                                onClick={handleSeeCompetitorKeywords}
+                                className="text-[10px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 transition flex items-center gap-1 font-bold group"
+                            >
+                                <Target className="w-3 h-3 group-hover:scale-110 transition" />
+                                See Competitors Keywords
+                            </button>
                         </h3>
                         <p className="text-sm text-zinc-500 mb-4 bg-purple-900/20 p-2 rounded border-l-2 border-purple-500">{data?.sectionInsights?.competitors}</p>
 
@@ -570,6 +620,83 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
         </div>
     );
 
+    const renderKeywords = () => (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+            <h3 className="text-xl font-bold flex items-center gap-2">
+                <Layers className="w-5 h-5 text-emerald-400" /> Keywords Intelligence
+            </h3>
+
+            {isKeywordsLoading ? (
+                <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                    <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
+                    <p className="text-zinc-500 animate-pulse">Fetching Deep Keyword Data...</p>
+                </div>
+            ) : competitorKeywords.length > 0 ? (
+                <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="border-b border-white/5 bg-zinc-900/50">
+                                    <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider">Keyword</th>
+                                    <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider w-32">Trend</th>
+                                    <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">KD %</th>
+                                    <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Volume</th>
+                                    <th className="p-4 text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">CPC (Avg)</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/5">
+                                {competitorKeywords.map((item, idx) => (
+                                    <tr key={idx} className="hover:bg-white/5 transition-colors group">
+                                        <td className="p-4 font-medium text-white group-hover:text-emerald-400 transition-colors">{item.keyword}</td>
+                                        <td className="p-4 w-32">
+                                            {item.trends && item.trends.length > 0 ? (
+                                                <div className="h-8 w-24">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <AreaChart data={item.trends}>
+                                                            <Area type="monotone" dataKey="count" stroke="#10b981" strokeWidth={1} fillOpacity={0.1} fill="#10b981" />
+                                                        </AreaChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                            ) : <span className="text-xs text-zinc-700">-</span>}
+                                        </td>
+                                        <td className="p-4 text-right">
+                                            {item.difficulty !== undefined ? (
+                                                <span className={`px-2 py-1 rounded text-xs font-bold ${item.difficulty > 70 ? 'bg-red-500/10 text-red-500' :
+                                                    item.difficulty > 30 ? 'bg-yellow-500/10 text-yellow-500' : 'bg-emerald-500/10 text-emerald-500'
+                                                    }`}>
+                                                    {item.difficulty}
+                                                </span>
+                                            ) : <span className="text-zinc-600">-</span>}
+                                        </td>
+                                        <td className="p-4 text-right text-zinc-300">{item.search_volume?.toLocaleString()}</td>
+                                        <td className="p-4 text-right text-zinc-400">
+                                            ${item.cpc?.toFixed(2) || '0.00'}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            ) : (
+                <div className="text-center py-20 text-zinc-500 border border-dashed border-white/10 rounded-2xl flex flex-col items-center gap-6 bg-zinc-900/20 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-2">
+                        <Layers className="w-12 h-12 text-zinc-700 mb-2" />
+                        <p className="text-lg font-medium text-zinc-400">No keyword data found for this query.</p>
+                        <p className="text-sm text-zinc-600 max-w-sm mx-auto">Trigger deep keyword intelligence to see search volume, CPC, and difficulty metrics for competitors.</p>
+                    </div>
+                    <button
+                        onClick={handleSeeCompetitorKeywords}
+                        className="bg-emerald-500 hover:bg-emerald-400 text-black px-8 py-3 rounded-xl transition-all flex items-center gap-2 font-bold shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 duration-200"
+                    >
+                        <Target className="w-5 h-5" />
+                        Fetch Keywords Intelligence
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+
     const renderDiscussions = () => (
         <div className="space-y-6">
             {data?.discussionInsights && (
@@ -736,7 +863,7 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                                         </div>
                                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
                                             <div className="flex bg-zinc-900 rounded-lg p-1 border border-white/5 w-full sm:w-auto overflow-x-auto no-scrollbar">
-                                                {['overview', 'organic', 'discussions'].map((tab) => (
+                                                {['overview', 'keywords', 'organic', 'discussions'].map((tab) => (
                                                     <button
                                                         key={tab}
                                                         onClick={() => setDashboardTab(tab)}
@@ -745,17 +872,18 @@ const Dashboard = ({ lang, dict }: { lang: string; dict: any }) => {
                                                             : 'text-zinc-400 hover:text-white'
                                                             }`}
                                                     >
-                                                        {dict?.dashboard?.tabs?.[tab] || tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                                        {tab === 'keywords' ? (dict?.dashboard?.tabs?.keywords || 'Keywords') : (dict?.dashboard?.tabs?.[tab] || tab.charAt(0).toUpperCase() + tab.slice(1))}
                                                     </button>
                                                 ))}
                                             </div>
-                                            <button onClick={() => { setData(null); setQuery(''); }} className="w-full sm:w-auto px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm flex items-center justify-center gap-2 whitespace-nowrap">
+                                            <button onClick={() => { setData(null); setQuery(''); setCompetitorKeywords([]); }} className="w-full sm:w-auto px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm flex items-center justify-center gap-2 whitespace-nowrap">
                                                 <Search className="w-4 h-4" /> {dict?.dashboard?.new_analysis || 'New'}
                                             </button>
                                         </div>
                                     </div>
 
                                     {dashboardTab === 'overview' && renderOverview()}
+                                    {dashboardTab === 'keywords' && renderKeywords()}
                                     {dashboardTab === 'organic' && renderOrganic()}
                                     {dashboardTab === 'discussions' && renderDiscussions()}
                                 </div>

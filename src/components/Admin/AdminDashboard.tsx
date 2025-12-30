@@ -8,7 +8,7 @@ import {
     Trash2,
     PlusCircle,
     Activity,
-    Database,
+    Settings,
     ChevronDown,
     ChevronRight,
     Search as SearchIcon
@@ -127,14 +127,14 @@ export default function AdminDashboard() {
                         <p className="text-zinc-400 mt-2">Manage users, credits, and view system logs.</p>
                     </div>
                     <div className="flex flex-col gap-4">
-                        <Link href="/en/admin/credentials">
+                        <Link href={`/${typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'en'}/admin/credentials`}>
                             <button className="w-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors rounded-xl p-4 flex items-center gap-4 group">
                                 <div className="p-3 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
-                                    <Database className="w-6 h-6 text-purple-400" />
+                                    <Settings className="w-6 h-6 text-purple-400" />
                                 </div>
                                 <div className="text-left">
-                                    <div className="text-lg font-bold">API Keys</div>
-                                    <div className="text-xs text-zinc-500 uppercase font-bold">Manage Credentials</div>
+                                    <div className="text-lg font-bold">System Settings</div>
+                                    <div className="text-xs text-zinc-500 uppercase font-bold">Global Credentials & Config</div>
                                 </div>
                             </button>
                         </Link>

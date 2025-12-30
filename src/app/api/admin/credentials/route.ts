@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
         }
 
         await connectDB();
-        const settings = await SystemSettings.findOne({}).select('+openaiKey +serpKey');
+        const settings = await SystemSettings.findOne({}).select('+openaiKey +serpKey +dataForSeoLogin +dataForSeoPassword');
 
         // Mask keys for display
         const mask = (key: string) => key ? `${key.substring(0, 3)}...${key.substring(key.length - 4)}` : '';
@@ -45,8 +45,12 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
             openaiKey: settings?.openaiKey ? mask(settings.openaiKey) : '',
             serpKey: settings?.serpKey ? mask(settings.serpKey) : '',
+            dataForSeoLogin: settings?.dataForSeoLogin ? mask(settings.dataForSeoLogin) : '',
+            dataForSeoPassword: settings?.dataForSeoPassword ? mask(settings.dataForSeoPassword) : '',
             hasOpenaiKey: !!settings?.openaiKey,
-            hasSerpKey: !!settings?.serpKey
+            hasSerpKey: !!settings?.serpKey,
+            hasDataForSeoLogin: !!settings?.dataForSeoLogin,
+            hasDataForSeoPassword: !!settings?.dataForSeoPassword
         });
 
     } catch (error) {
@@ -70,10 +74,10 @@ export async function POST(request: NextRequest) {
             settings = new SystemSettings({});
         }
 
-        if (openaiKey) settings.openaiKey = openaiKey;
-        if (serpKey) settings.serpKey = serpKey;
-        if (dataForSeoLogin) settings.dataForSeoLogin = dataForSeoLogin;
-        if (dataForSeoPassword) settings.dataForSeoPassword = dataForSeoPassword;
+        if (openaiKey !== undefined && !openaiKey.includes('...')) settings.openaiKey = openaiKey;
+        if (serpKey !== undefined && !serpKey.includes('...')) settings.serpKey = serpKey;
+        if (dataForSeoLogin !== undefined && !dataForSeoLogin.includes('...')) settings.dataForSeoLogin = dataForSeoLogin;
+        if (dataForSeoPassword !== undefined && !dataForSeoPassword.includes('...')) settings.dataForSeoPassword = dataForSeoPassword;
 
         settings.updatedAt = new Date();
 

@@ -46,13 +46,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        // Strict Superadmin Check
-        if (user.email !== SUPERADMIN_EMAIL) {
-            return NextResponse.json({
-                error: 'This feature is currently available only for administrators.',
-                isRestricted: true
-            }, { status: 403 });
-        }
+        // Superadmin status is no longer required for basic keyword research, but we could add usage limits here if needed.
+        const isSuperadmin = user.email === SUPERADMIN_EMAIL;
 
         const settings = await SystemSettings.findOne({}).select('+dataForSeoLogin +dataForSeoPassword');
 
@@ -163,6 +158,12 @@ export async function POST(request: NextRequest) {
 
     } catch (error: any) {
         console.error("DataForSEO Error:", error.response?.data || error.message);
+        if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+            return NextResponse.json(
+                { error: 'Configuration Error: Invalid DataForSEO Credentials. Please check settings in Admin Panel.' },
+                { status: 500 }
+            );
+        }
         const errMsg = error.response?.data?.tasks?.[0]?.status_message || error.message || 'Failed to fetch keywords';
         return NextResponse.json({ error: errMsg }, { status: 500 });
     }

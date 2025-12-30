@@ -79,10 +79,16 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json({ reply, searchId: searchId || null });
-    } catch (error) {
-        console.error("Chat Error:", (error as Error).message);
+    } catch (error: any) {
+        console.error("Chat Error:", error.response?.data || error.message);
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return NextResponse.json(
+                { reply: "Configuration Error: Invalid OpenAI API Key. Please check settings in Admin Panel." },
+                { status: 500 }
+            );
+        }
         return NextResponse.json(
-            { reply: "I'm having trouble connecting to the AI. Please check your API key." },
+            { reply: "I'm having trouble connecting to the AI. Please contact support." },
             { status: 500 }
         );
     }
