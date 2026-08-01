@@ -1,24 +1,18 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  console.warn('WARNING: JWT_SECRET environment variable is not set. Authentication will not work.');
-}
+// Use env var if available, otherwise generate a random secret at startup.
+// Note: A generated secret means sessions won't survive a restart, but login will work.
+// For production, ALWAYS set JWT_SECRET in your environment variables.
+const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
 
 export const signToken = (payload: any) => {
-  if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is not configured');
-  }
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 };
 
 export const verifyToken = (token: string) => {
   try {
-    if (!JWT_SECRET) {
-      return null;
-    }
     return jwt.verify(token, JWT_SECRET);
   } catch (error) {
     return null;
